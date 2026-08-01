@@ -91,7 +91,7 @@ footer a:hover{color:var(--ai)}
   </div>
 </main>
 
-<footer><a href="admin.html">管理</a></footer>
+<footer><span id="syncInfo" style="margin-right:10px;color:var(--shu)"></span><a href="admin.html">管理</a></footer>
 
 <script>
 /* ===== データ層(管理画面と共有:localStorage同一キー) ===== */
@@ -117,6 +117,56 @@ function workMin(r){
   if(o<=i)o+=1440;
   return Math.max(0,o-i-(Number(r.breakMin)||0));
 }
+function calcRecord(r){
+  const inM=toMin(r.clockIn),outRaw=toMin(r.clockOut);
+  if(inM==null||outRaw==null)return{work:0,ot:0,night:0};
+  let outM=outRaw;if(outM<=inM)outM+=1440;
+  const work=Math.max(0,(outM-inM)-(Number(r.breakMin)||0));
+  const th=(Number(D.settings.threshold)||8)*60;
+  const ot=Math.max(0,work-th);
+  let night=0;
+  for(const[ns,ne]of[[1320,1740],[2760,3180]])night+=Math.max(0,Math.min(outM,ne)-Math.max(inM,ns));
+  night=Math.min(night,work);
+  return{work,ot,night};
+}
+
+/* ===== スプレッドシート連携(送信キュー) ===== */
+function payloadRecord(r){
+  const e=empById(r.empId);
+  const c=calcRecord(r);
+  return{id:'r'+r.id,date:r.date,empName:e?e.name:'(削除済)',empType:e?(e.type==='part'?'アルバイト':'正社員'):'',
+    clockIn:r.clockIn||'',clockOut:r.clockOut||'',breakMin:r.breakMin||0,
+    workH:r.clockOut?(c.work/60).toFixed(2):'',otH:r.clockOut?(c.ot/60).toFixed(2):'',
+    nightH:r.clockOut?(c.night/60).toFixed(2):'',note:r.note||''};
+}
+function queueSync(action,payload){
+  if(!D.settings.gasOn||!D.settings.gasUrl)return;
+  if(!D.syncQueue)D.syncQueue=[];
+  D.syncQueue.push({action,record:payload,ts:Date.now()});
+  saveData(D);syncBadge();flushSync();
+}
+let flushing=false;
+async function flushSync(){
+  if(flushing||!D.settings.gasOn||!D.settings.gasUrl||!(D.syncQueue&&D.syncQueue.length))return;
+  flushing=true;
+  try{
+    while(D.syncQueue.length){
+      const item=D.syncQueue[0];
+      await fetch(D.settings.gasUrl,{method:'POST',mode:'no-cors',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({token:D.settings.gasToken||'',action:item.action,record:item.record,records:item.records})});
+      D.syncQueue.shift();saveData(D);
+    }
+  }catch(e){/* オフライン等。キューを保持し後で再送 */}
+  flushing=false;syncBadge();
+}
+function syncBadge(){
+  const el=document.getElementById('syncInfo');if(!el)return;
+  const n=(D.syncQueue||[]).length;
+  el.textContent=(D.settings.gasOn&&n)?`スプシ未送信:${n}件`:'';
+}
+setInterval(flushSync,60000);
+window.addEventListener('online',flushSync);
 
 /* ===== 時計 ===== */
 function tick(){
@@ -145,10 +195,12 @@ function punch(kind){
   const tStr=`${pad(Math.floor(nowMin/60)%24)}:${pad(nowMin%60)}`;
   const date=todayStr();
   let rec=D.records.find(r=>r.empId===empId&&r.date===date);
+  let syncRec=null;
   if(kind==='in'){
     if(rec&&rec.clockIn&&!rec.clockOut){msg.textContent=`${emp.name}さんは既に出勤打刻済みです`;msg.className='ng';return}
     if(rec&&rec.clockIn&&rec.clockOut){msg.textContent=`${emp.name}さんは本日退勤済みです`;msg.className='ng';return}
-    D.records.push({id:D.seq++,empId,date,clockIn:tStr,clockOut:'',breakMin:0,note:''});
+    syncRec={id:D.seq++,empId,date,clockIn:tStr,clockOut:'',breakMin:0,note:''};
+    D.records.push(syncRec);
     msg.textContent=`${emp.name}さん 出勤 ${tStr} を記録しました`;msg.className='ok';
   }else{
     if(!rec||!rec.clockIn){ // 前日出勤・未退勤(夜勤明け)を確認
@@ -161,9 +213,12 @@ function punch(kind){
     rec.clockOut=tStr;
     const w=workMin({...rec,breakMin:0});
     rec.breakMin=w>480?60:(w>360?45:0); // 休憩の自動初期値(管理画面で修正可)
+    syncRec=rec;
     msg.textContent=`${emp.name}さん 退勤 ${tStr} を記録しました(休憩${rec.breakMin}分を自動設定)`;msg.className='ok';
   }
-  saveData(D);renderToday();
+  saveData(D);
+  if(syncRec)queueSync('upsert',payloadRecord(syncRec));
+  renderToday();
 }
 
 /* ===== 表示 ===== */
@@ -177,20 +232,22 @@ function renderToday(){
   document.getElementById('todayEmpty').style.display=recs.length?'none':'block';
 }
 function renderSelect(){
+  const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
   document.getElementById('punchEmp').innerHTML='<option value="">従業員を選択してください</option>'+
-    D.employees.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+    list.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
 }
 
 /* ===== デモデータ(初回のみ・管理画面と同一) ===== */
 function seedDemo(){
-  const mk=(name,type,o)=>({id:'e'+(D.seq++),name,type,hourlyWage:o.w||0,monthlySalary:o.s||0,baseHours:o.bh||160,capHours:o.cap||0});
+  const mk=(name,type,o)=>({id:'e'+(D.seq++),name,type,hourlyWage:o.w||0,monthlySalary:o.s||0,baseHours:o.bh||160,capHours:o.cap||0,commuteDay:o.cm||0,active:true});
   D.employees=[
     mk('佐藤 健一','full',{s:320000,bh:160,cap:180}),
     mk('高橋 美咲','full',{s:280000,bh:160,cap:170}),
-    mk('田中 大輝','part',{w:1200,cap:80}),
-    mk('鈴木 あゆみ','part',{w:1150,cap:70}),
-    mk('中村 翔太','part',{w:1100,cap:75})
+    mk('田中 大輝','part',{w:1200,cap:80,cm:500}),
+    mk('鈴木 あゆみ','part',{w:1150,cap:70,cm:400}),
+    mk('中村 翔太','part',{w:1100,cap:75,cm:500})
   ];
+  D.employees.forEach((e,i)=>e.sortOrder=i);
   const[e1,e2,e3,e4,e5]=D.employees.map(x=>x.id);
   const add=(id,ds,ci,co,br,nt)=>D.records.push({id:D.seq++,empId:id,date:ds,clockIn:ci,clockOut:co,breakMin:br,note:nt||''});
   const dim=ym=>{const[y,m]=ym.split('-').map(Number);return new Date(y,m,0).getDate()};
@@ -219,11 +276,12 @@ function seedDemo(){
     if(wd===1||wd===3||wd===5)P[e4][d]=5;
     if(wd===0||wd===6)P[e5][d]=8;
   }
+  D.seeded=true; // デモ投入済みフラグ(全データ削除後の再投入を防止)
   saveData(D);
 }
 
-if(!D.employees.length&&!D.records.length)seedDemo();
-renderSelect();renderToday();
+if(!D.employees.length&&!D.records.length&&!D.seeded)seedDemo();
+renderSelect();renderToday();syncBadge();flushSync();
 // 他タブ(管理画面)での変更を反映
 window.addEventListener('storage',()=>{D=loadData();renderSelect();renderToday()});
 setInterval(()=>{D=loadData();renderToday()},30000);

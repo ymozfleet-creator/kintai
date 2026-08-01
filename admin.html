@@ -199,6 +199,26 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
     <p class="note" style="margin-top:10px">上限はセルで直接編集(即保存)。着地予測=実績+今日以降の予定。アルバイトは扶養枠、正社員は残業上限(36協定:月45h目安)の管理に。</p>
   </div>
   <div class="card">
+    <h2>シフト一括入力</h2>
+    <div class="formRow" style="margin-bottom:6px">
+      <label>対象<select id="bulkEmp" style="min-width:150px"></select></label>
+      <label>曜日<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 0">
+        <label style="flex-direction:row;gap:4px;align-items:center;color:var(--shu)"><input type="checkbox" class="bulkWd" value="0">日</label>
+        <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="1" checked>月</label>
+        <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="2" checked>火</label>
+        <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="3" checked>水</label>
+        <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="4" checked>木</label>
+        <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="5" checked>金</label>
+        <label style="flex-direction:row;gap:4px;align-items:center;color:var(--ai)"><input type="checkbox" class="bulkWd" value="6">土</label>
+      </div></label>
+      <label>時間(h/日)<input type="number" id="bulkH" value="8" min="0" max="24" step="0.5" style="width:80px"></label>
+      <button class="btn btnMain" onclick="applyBulk()">対象月に適用</button>
+      <button class="btn btnGhost" onclick="copyPrevPlans()">前月の予定をコピー</button>
+      <button class="btn btnGhost" onclick="clearPlans()">対象月の予定をクリア</button>
+    </div>
+    <p class="note">選んだ曜日に予定時間を一括設定します(該当曜日の既存予定は上書き)。時間を0にして適用するとその曜日を休みにできます。細かい個別調整は下のシフト表で直接編集してください。</p>
+  </div>
+  <div class="card">
     <h2>予定シフト表(h/日)</h2>
     <p class="note" style="margin-bottom:10px">予定稼働時間を入力(0.5h単位・空欄=休み)。変更は上の着地予測に即反映。土日=ベージュ/実績確定日=緑。</p>
     <div class="tblWrap"><table class="matrix"><thead id="mxHead"></thead><tbody id="mxBody"></tbody></table></div>
@@ -220,23 +240,19 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 <!-- ===== 従業員・設定 ===== -->
 <section id="tab-emp" class="tab">
   <div class="card">
-    <h2>従業員の登録</h2>
+    <h2>従業員</h2>
     <div class="formRow">
-      <label>氏名<input type="text" id="empName" placeholder="山田 太郎" style="width:150px"></label>
-      <label>区分<select id="empType" onchange="toggleEmpFields()">
-        <option value="part">アルバイト</option><option value="full">正社員</option>
+      <button class="btn btnMain" onclick="openEmpDialog()">＋ 従業員を追加</button>
+      <label>表示<select id="empView" onchange="renderEmps()">
+        <option value="active">在籍のみ</option><option value="all">退職者も表示</option>
       </select></label>
-      <label id="fWage">時給(円)<input type="number" id="empWage" value="1200" min="0" step="10" style="width:100px"></label>
-      <label id="fSalary" style="display:none">基準内賃金/月<input type="number" id="empSalary" value="300000" min="0" step="1000" style="width:120px"></label>
-      <label id="fBaseH" style="display:none">月平均所定労働時間<input type="number" id="empBaseH" value="160" min="1" step="0.1" style="width:100px"></label>
-      <label>月間上限(h)<input type="number" id="empCap" value="80" min="0" style="width:80px"></label>
-      <button class="btn btnMain" onclick="addEmp()">登録</button>
     </div>
     <div class="tblWrap"><table>
-      <thead><tr><th>氏名</th><th>区分</th><th class="r">時給/月給</th><th class="r">所定時間</th><th class="r">残業単価(参考)</th><th class="r">月間上限</th><th></th></tr></thead>
+      <thead><tr><th>並び順</th><th>氏名</th><th>区分</th><th class="r">時給/月給</th><th class="r">交通費/日</th><th class="r">月間上限</th><th>在籍</th><th></th></tr></thead>
       <tbody id="empBody"></tbody>
     </table></div>
     <div id="empEmpty" class="empty" style="display:none">従業員が未登録です</div>
+    <p class="note" style="margin-top:10px">退職者は「編集→退職済」で非表示にでき、過去の勤怠・給与記録は保持されます(完全削除は記録ごと消えます)。賃金を変更すると過去月の試算にも反映されるため、月次確定後は給与試算タブのCSVを保存して確定値を残す運用を推奨します。</p>
   </div>
 
   <div class="card">
@@ -263,6 +279,23 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
   </div>
 
   <div class="card">
+    <h2>スプレッドシート連携(Google Sheets)</h2>
+    <div class="formRow">
+      <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="gasOn">連携を有効にする</label>
+      <label style="flex:1;min-width:280px">GAS WebアプリURL<input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/…/exec" style="width:100%"></label>
+      <label>合言葉(トークン)<input type="text" id="gasToken" style="width:130px"></label>
+      <button class="btn btnMain" onclick="saveGas()">保存</button>
+    </div>
+    <div class="formRow" style="margin-bottom:0">
+      <button class="btn btnGhost" onclick="testGas()">テスト送信</button>
+      <button class="btn btnGhost" onclick="flushSync(true)">未送信を再送</button>
+      <button class="btn btnGhost" onclick="bulkSync()">全記録を一括送信</button>
+      <span class="note" id="gasStatus" style="align-self:center"></span>
+    </div>
+    <p class="note" style="margin-top:8px">有効にすると、打刻・記録の修正・削除がリアルタイムでスプレッドシートへ反映されます(「勤怠記録」シート=常に最新状態/「打刻ログ」シート=全操作履歴)。セットアップは同梱の gas.gs とマニュアル第8章を参照。通信失敗分は端末内のキューに保持され、回復時に自動再送されます。連携を後から始めた場合は「全記録を一括送信」で過去分をまとめて反映できます。</p>
+  </div>
+
+  <div class="card">
     <h2>データ管理</h2>
     <div class="formRow">
       <button class="btn btnGhost" onclick="backupJson()">バックアップ(JSON保存)</button>
@@ -274,6 +307,33 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 </section>
 
 </main>
+
+<!-- 従業員編集ダイアログ -->
+<dialog id="empDlg">
+  <h3 id="empDlgTitle">従業員の追加</h3>
+  <input type="hidden" id="eDlgId">
+  <div class="formRow">
+    <label>氏名<input type="text" id="eDlgName" placeholder="山田 太郎" style="width:170px"></label>
+    <label>区分<select id="eDlgType" onchange="empDlgFields()">
+      <option value="part">アルバイト</option><option value="full">正社員</option>
+    </select></label>
+  </div>
+  <div class="formRow">
+    <label id="eFWage">時給(円)<input type="number" id="eDlgWage" min="0" step="10" style="width:100px"></label>
+    <label id="eFSalary">基準内賃金/月(円)<input type="number" id="eDlgSalary" min="0" step="1000" style="width:120px"></label>
+    <label id="eFBaseH">月平均所定労働時間<input type="number" id="eDlgBaseH" min="1" step="0.1" style="width:100px"></label>
+  </div>
+  <div class="formRow">
+    <label>交通費(円/日)<input type="number" id="eDlgCommute" min="0" step="10" style="width:100px"></label>
+    <label>月間上限(h)<input type="number" id="eDlgCap" min="0" style="width:90px"></label>
+    <label>在籍<select id="eDlgActive"><option value="1">在籍</option><option value="0">退職済</option></select></label>
+  </div>
+  <p class="note">交通費は出勤日数×単価で給与試算に加算されます。退職済にすると打刻画面・シフト表から非表示になります(過去記録は保持)。</p>
+  <div class="dlgBtns">
+    <button class="btn btnGhost" onclick="document.getElementById('empDlg').close()">キャンセル</button>
+    <button class="btn btnMain" onclick="saveEmpDialog()">保存</button>
+  </div>
+</dialog>
 
 <!-- 記録編集ダイアログ -->
 <dialog id="recDlg">
@@ -342,15 +402,16 @@ function summarize(empId,ym){
 }
 function estimatePay(emp,s){
   const otR=Number(D.settings.otRate)||1.25,ntR=Number(D.settings.nightRate)||0.25;
+  const commute=(Number(emp.commuteDay)||0)*s.days;
   if(emp.type==='part'){
     const w=Number(emp.hourlyWage)||0;
     const base=w*(s.regular/60),otPay=w*otR*(s.ot/60),ntPay=w*ntR*(s.night/60);
-    return{base,otPay,ntPay,total:base+otPay+ntPay};
+    return{base,otPay,ntPay,commute,total:base+otPay+ntPay+commute};
   }
   const sal=Number(emp.monthlySalary)||0,bh=Number(emp.baseHours)||160;
   const unit=sal/bh;
   const otPay=unit*otR*(s.ot/60),ntPay=unit*ntR*(s.night/60);
-  return{base:sal,otPay,ntPay,total:sal+otPay+ntPay};
+  return{base:sal,otPay,ntPay,commute,total:sal+otPay+ntPay+commute};
 }
 
 /* ================= KPI ================= */
@@ -398,8 +459,12 @@ function renderRecords(){
 }
 function delRec(id){
   if(!confirm('この記録を削除しますか?'))return;
+  const rec=D.records.find(r=>r.id===id);
+  const pl=rec?payloadRecord(rec):null;
   D.records=D.records.filter(r=>r.id!==id);
-  saveData(D);renderAll();
+  saveData(D);
+  if(pl)queueSync('delete',pl);
+  renderAll();
 }
 function openRecDialog(id){
   if(!D.employees.length){alert('先に従業員を登録してください');return}
@@ -424,9 +489,12 @@ function saveRecDialog(){
   const rec={empId:g('dlgEmp').value,date:g('dlgDate').value,clockIn:g('dlgIn').value,
     clockOut:g('dlgOut').value,breakMin:Number(g('dlgBreak').value)||0,note:g('dlgNote').value.trim()};
   if(!rec.empId||!rec.date||!rec.clockIn){alert('従業員・日付・出勤時刻は必須です');return}
-  if(id)Object.assign(D.records.find(r=>r.id===Number(id)),rec);
-  else D.records.push({id:D.seq++,...rec});
-  saveData(D);g('recDlg').close();renderAll();
+  let saved;
+  if(id){saved=D.records.find(r=>r.id===Number(id));Object.assign(saved,rec)}
+  else{saved={id:D.seq++,...rec};D.records.push(saved)}
+  saveData(D);
+  queueSync('upsert',payloadRecord(saved));
+  g('recDlg').close();renderAll();
 }
 
 /* ================= 稼働調整 ================= */
@@ -446,7 +514,7 @@ function hasDoneRecord(empId,ds){return D.records.some(r=>r.empId===empId&&r.dat
 function renderPlan(){
   const ym=gm();
   const now=todayStr(),curYm=now.slice(0,7),todayD=Number(now.slice(8));
-  document.getElementById('capBody').innerHTML=D.employees.map(e=>{
+  document.getElementById('capBody').innerHTML=empList().map(e=>{
     const s=summarize(e.id,ym);
     const capH=Number(e.capHours)||0,cap=capH*60;
     const plan=planSum(ym,e.id);
@@ -484,7 +552,7 @@ function renderMatrix(){
   }
   head+='<th>計</th></tr>';
   document.getElementById('mxHead').innerHTML=head;
-  document.getElementById('mxBody').innerHTML=D.employees.map(e=>{
+  document.getElementById('mxBody').innerHTML=empList().map(e=>{
     const p=planGet(ym,e.id);let tot=0;
     let row=`<td class="nm">${esc(e.name)}</td>`;
     for(let d=1;d<=n;d++){
@@ -503,13 +571,14 @@ function renderMatrix(){
 /* ================= 給与試算 ================= */
 function renderPay(){
   const ym=gm();
-  const cards=D.employees.map(e=>{
+  const cards=empList(true).map(e=>{
     const s=summarize(e.id,ym);
     if(!s.days)return'';
     const p=estimatePay(e,s);
     const baseLabel=e.type==='part'?`基本給(${hmm(s.regular)})`:'基準内賃金(月給)';
+    const retired=e.active===false?' <small style="color:#999;font-weight:400">(退職)</small>':'';
     return `<div class="empCard">
-      <div class="head"><span class="nm">${esc(e.name)}</span>${typeBadge(e)}</div>
+      <div class="head"><span class="nm">${esc(e.name)}${retired}</span>${typeBadge(e)}</div>
       <div class="body">
         <div class="kv"><span class="k">出勤日数</span><span class="v">${s.days}日</span></div>
         <div class="kv"><span class="k">総労働時間</span><span class="v">${hmm(s.work)}</span></div>
@@ -518,6 +587,7 @@ function renderPay(){
         <div class="kv"><span class="k">${baseLabel}</span><span class="v">${yen(p.base)}</span></div>
         <div class="kv"><span class="k">残業割増</span><span class="v">${yen(p.otPay)}</span></div>
         <div class="kv"><span class="k">深夜割増</span><span class="v">${yen(p.ntPay)}</span></div>
+        <div class="kv"><span class="k">交通費(${s.days}日分)</span><span class="v">${yen(p.commute)}</span></div>
         <div class="payLine"><span class="k">支給見込(試算)</span><span class="v">${yen(p.total)}</span></div>
       </div>
     </div>`;
@@ -529,65 +599,135 @@ function renderPay(){
 }
 
 /* ================= 従業員 ================= */
-function toggleEmpFields(){
-  const p=document.getElementById('empType').value==='part';
-  document.getElementById('fWage').style.display=p?'':'none';
-  document.getElementById('fSalary').style.display=p?'none':'';
-  document.getElementById('fBaseH').style.display=p?'none':'';
-  document.getElementById('empCap').value=p?80:180;
+function empList(all){
+  const arr=[...D.employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  return all?arr:arr.filter(e=>e.active!==false);
 }
-function addEmp(){
-  const name=document.getElementById('empName').value.trim();
+function empDlgFields(){
+  const p=document.getElementById('eDlgType').value==='part';
+  document.getElementById('eFWage').style.display=p?'':'none';
+  document.getElementById('eFSalary').style.display=p?'none':'';
+  document.getElementById('eFBaseH').style.display=p?'none':'';
+}
+function openEmpDialog(id){
+  const g=x=>document.getElementById(x);
+  if(id){
+    const e=empById(id);
+    g('empDlgTitle').textContent='従業員の編集';
+    g('eDlgId').value=id;g('eDlgName').value=e.name;g('eDlgType').value=e.type;
+    g('eDlgWage').value=e.hourlyWage||'';g('eDlgSalary').value=e.monthlySalary||'';
+    g('eDlgBaseH').value=e.baseHours||160;g('eDlgCommute').value=e.commuteDay||'';
+    g('eDlgCap').value=e.capHours||'';g('eDlgActive').value=e.active===false?'0':'1';
+  }else{
+    g('empDlgTitle').textContent='従業員の追加';
+    g('eDlgId').value='';g('eDlgName').value='';g('eDlgType').value='part';
+    g('eDlgWage').value=1200;g('eDlgSalary').value=300000;g('eDlgBaseH').value=160;
+    g('eDlgCommute').value='';g('eDlgCap').value=80;g('eDlgActive').value='1';
+  }
+  empDlgFields();
+  g('empDlg').showModal();
+}
+function saveEmpDialog(){
+  const g=x=>document.getElementById(x);
+  const name=g('eDlgName').value.trim();
   if(!name){alert('氏名を入力してください');return}
-  D.employees.push({
-    id:'e'+(D.seq++),name,
-    type:document.getElementById('empType').value,
-    hourlyWage:Number(document.getElementById('empWage').value)||0,
-    monthlySalary:Number(document.getElementById('empSalary').value)||0,
-    baseHours:Number(document.getElementById('empBaseH').value)||160,
-    capHours:Number(document.getElementById('empCap').value)||0
-  });
-  document.getElementById('empName').value='';
+  const data={
+    name,type:g('eDlgType').value,
+    hourlyWage:Number(g('eDlgWage').value)||0,
+    monthlySalary:Number(g('eDlgSalary').value)||0,
+    baseHours:Number(g('eDlgBaseH').value)||160,
+    commuteDay:Number(g('eDlgCommute').value)||0,
+    capHours:Number(g('eDlgCap').value)||0,
+    active:g('eDlgActive').value==='1'
+  };
+  const id=g('eDlgId').value;
+  if(id)Object.assign(empById(id),data);
+  else D.employees.push({id:'e'+(D.seq++),sortOrder:D.employees.length,...data});
+  saveData(D);g('empDlg').close();renderAll();
+}
+function moveEmp(id,dir){
+  const arr=empList(true);
+  arr.forEach((e,i)=>e.sortOrder=i);
+  const i=arr.findIndex(e=>e.id===id),j=i+dir;
+  if(j<0||j>=arr.length)return;
+  [arr[i].sortOrder,arr[j].sortOrder]=[arr[j].sortOrder,arr[i].sortOrder];
   saveData(D);renderAll();
 }
 function delEmp(id){
   const e=empById(id);
-  if(!confirm(`${e.name}さんを削除しますか?\n(勤怠記録・予定シフトも削除されます)`))return;
+  if(!confirm(`${e.name}さんを完全に削除しますか?\n過去の勤怠記録・予定シフトも全て消えます。\n(記録を残したい場合はキャンセルし、「編集」から退職済にしてください)`))return;
+  const delPayloads=D.records.filter(r=>r.empId===id).map(payloadRecord);
   D.employees=D.employees.filter(x=>x.id!==id);
   D.records=D.records.filter(r=>r.empId!==id);
   for(const ym in D.plans)delete D.plans[ym][id];
-  saveData(D);renderAll();
-}
-function editEmpWage(id){
-  const e=empById(id);
-  if(e.type==='part'){
-    const v=prompt(`${e.name}さんの時給(円)`,e.hourlyWage);
-    if(v!=null)e.hourlyWage=Number(v)||e.hourlyWage;
-  }else{
-    const v=prompt(`${e.name}さんの基準内賃金/月(円)`,e.monthlySalary);
-    if(v!=null)e.monthlySalary=Number(v)||e.monthlySalary;
-    const h=prompt('月平均所定労働時間',e.baseHours);
-    if(h!=null)e.baseHours=Number(h)||e.baseHours;
-  }
-  saveData(D);renderAll();
+  saveData(D);
+  delPayloads.forEach(p=>queueSync('delete',p));
+  renderAll();
 }
 function renderEmps(){
-  document.getElementById('empBody').innerHTML=D.employees.map(e=>{
+  const all=document.getElementById('empView').value==='all';
+  const list=empList(true).filter(e=>all||e.active!==false);
+  document.getElementById('empBody').innerHTML=list.map(e=>{
     const pay=e.type==='part'?yen(e.hourlyWage)+'/h':yen(e.monthlySalary)+'/月';
-    const bh=e.type==='part'?'−':e.baseHours+'h';
-    const otR=Number(D.settings.otRate)||1.25;
-    const unit=e.type==='part'?yen(e.hourlyWage*otR)+'/h':yen(e.monthlySalary/(e.baseHours||160)*otR)+'/h';
-    return `<tr><td>${esc(e.name)}</td><td>${typeBadge(e)}</td>
-      <td class="r num">${pay}</td><td class="r num">${bh}</td><td class="r num">${unit}</td>
+    const st=e.active===false?'<span class="badge" style="background:#EEE;color:#888">退職済</span>':'<span class="badge stOk">在籍</span>';
+    return `<tr style="${e.active===false?'opacity:.55':''}">
+      <td><button class="btnSm" onclick="moveEmp('${e.id}',-1)" title="上へ">↑</button> <button class="btnSm" onclick="moveEmp('${e.id}',1)" title="下へ">↓</button></td>
+      <td>${esc(e.name)}</td><td>${typeBadge(e)}</td>
+      <td class="r num">${pay}</td>
+      <td class="r num">${e.commuteDay?yen(e.commuteDay):'−'}</td>
       <td class="r num">${e.capHours?e.capHours+'h':'−'}</td>
-      <td><button class="btnSm" onclick="editEmpWage('${e.id}')">賃金修正</button>
+      <td>${st}</td>
+      <td><button class="btnSm" onclick="openEmpDialog('${e.id}')">編集</button>
           <button class="btnDanger" onclick="delEmp('${e.id}')">削除</button></td></tr>`;
   }).join('');
   document.getElementById('empEmpty').style.display=D.employees.length?'none':'block';
-  const opts=D.employees.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
-  document.getElementById('dlgEmp').innerHTML=opts;
-  document.getElementById('recEmpFilter').innerHTML='<option value="">全員</option>'+opts;
+  const optAll=empList(true).map(e=>`<option value="${e.id}">${esc(e.name)}${e.active===false?'(退職)':''}</option>`).join('');
+  document.getElementById('dlgEmp').innerHTML=optAll;
+  document.getElementById('recEmpFilter').innerHTML='<option value="">全員</option>'+optAll;
+  document.getElementById('bulkEmp').innerHTML='<option value="">全員(在籍)</option>'+
+    empList().map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
 }
+
+/* ================= シフト一括入力 ================= */
+function setPlanRaw(ym,empId,day,val){
+  if(!D.plans[ym])D.plans[ym]={};if(!D.plans[ym][empId])D.plans[ym][empId]={};
+  if(val>0)D.plans[ym][empId][day]=val;else delete D.plans[ym][empId][day];
+}
+function applyBulk(){
+  const ym=gm();
+  const wds=[...document.querySelectorAll('.bulkWd:checked')].map(x=>Number(x.value));
+  if(!wds.length){alert('曜日を選択してください');return}
+  const h=Number(document.getElementById('bulkH').value)||0;
+  const sel=document.getElementById('bulkEmp').value;
+  const targets=sel?[empById(sel)]:empList();
+  if(!targets.length){alert('対象の従業員がいません');return}
+  const[y,m]=ym.split('-').map(Number);
+  targets.forEach(e=>{
+    for(let d=1;d<=daysInMonth(ym);d++){
+      if(wds.includes(new Date(y,m-1,d).getDay()))setPlanRaw(ym,e.id,d,h);
+    }
+  });
+  saveData(D);renderAll();
+}
+function copyPrevPlans(){
+  const ym=gm();
+  const[y,m]=ym.split('-').map(Number);
+  const p=new Date(y,m-2,1);
+  const prevYm=`${p.getFullYear()}-${pad(p.getMonth()+1)}`;
+  const src=D.plans[prevYm];
+  if(!src||!Object.keys(src).length){alert(`前月(${prevYm})の予定シフトがありません`);return}
+  if(D.plans[ym]&&Object.keys(D.plans[ym]).length&&!confirm('対象月の既存予定を上書きしてコピーします。よろしいですか?'))return;
+  D.plans[ym]=JSON.parse(JSON.stringify(src));
+  const n=daysInMonth(ym); // 月末日数差の調整
+  for(const id in D.plans[ym])for(const d in D.plans[ym][id])if(Number(d)>n)delete D.plans[ym][id][d];
+  saveData(D);renderAll();
+}
+function clearPlans(){
+  const ym=gm();
+  if(!confirm(`${ym} の予定シフトを全てクリアしますか?`))return;
+  delete D.plans[ym];saveData(D);renderAll();
+}
+
 
 /* ================= 設定・データ管理 ================= */
 function saveSettings(){
@@ -630,13 +770,13 @@ function exportRecordsCsv(){
 }
 function exportSummaryCsv(){
   const ym=gm();
-  const rows=[['氏名','区分','出勤日数','総労働(h)','残業(h)','深夜(h)','基本額','残業割増','深夜割増','支給見込']];
-  D.employees.forEach(e=>{
+  const rows=[['氏名','区分','在籍','出勤日数','総労働(h)','残業(h)','深夜(h)','基本額','残業割増','深夜割増','交通費','支給見込']];
+  empList(true).forEach(e=>{
     const s=summarize(e.id,ym);if(!s.days)return;
     const p=estimatePay(e,s);
-    rows.push([e.name,e.type==='part'?'アルバイト':'正社員',s.days,(s.work/60).toFixed(2),
+    rows.push([e.name,e.type==='part'?'アルバイト':'正社員',e.active===false?'退職':'在籍',s.days,(s.work/60).toFixed(2),
       (s.ot/60).toFixed(2),(s.night/60).toFixed(2),
-      Math.round(p.base),Math.round(p.otPay),Math.round(p.ntPay),Math.round(p.total)]);
+      Math.round(p.base),Math.round(p.otPay),Math.round(p.ntPay),Math.round(p.commute),Math.round(p.total)]);
   });
   dl(`月次集計_${ym}.csv`,rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'),'text/csv');
 }
@@ -654,9 +794,9 @@ function restoreJson(input){
 function wipeAll(){
   if(!confirm('全データを削除します。よろしいですか?'))return;
   if(!confirm('本当に削除しますか?(バックアップ推奨)'))return;
-  const pin=D.settings.adminPin;
-  D={employees:[],records:[],plans:{},settings:{otRate:1.25,nightRate:0.25,threshold:8,round:1,adminPin:pin},seq:1};
-  saveData(D);renderAll();
+  const keep={...D.settings}; // PIN・計算設定・スプシ連携設定はすべて維持
+  D={employees:[],records:[],plans:{},settings:keep,seq:1,seeded:true};
+  saveData(D);renderAll();gasBadge();
 }
 
 /* ================= PINロック ================= */
@@ -681,6 +821,115 @@ function doLock(){
 }
 document.getElementById('pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')checkPin()});
 
+/* ================= デモデータ(初回のみ・打刻画面と同一) ================= */
+function seedDemo(){
+  const mk=(name,type,o)=>({id:'e'+(D.seq++),name,type,hourlyWage:o.w||0,monthlySalary:o.s||0,baseHours:o.bh||160,capHours:o.cap||0,commuteDay:o.cm||0,active:true});
+  D.employees=[
+    mk('佐藤 健一','full',{s:320000,bh:160,cap:180}),
+    mk('高橋 美咲','full',{s:280000,bh:160,cap:170}),
+    mk('田中 大輝','part',{w:1200,cap:80,cm:500}),
+    mk('鈴木 あゆみ','part',{w:1150,cap:70,cm:400}),
+    mk('中村 翔太','part',{w:1100,cap:75,cm:500})
+  ];
+  D.employees.forEach((e,i)=>e.sortOrder=i);
+  const[e1,e2,e3,e4,e5]=D.employees.map(x=>x.id);
+  const add=(id,ds,ci,co,br,nt)=>D.records.push({id:D.seq++,empId:id,date:ds,clockIn:ci,clockOut:co,breakMin:br,note:nt||''});
+  const now=new Date();
+  const prev=new Date(now.getFullYear(),now.getMonth()-1,1);
+  const prevYm=`${prev.getFullYear()}-${pad(prev.getMonth()+1)}`;
+  const curYm=`${now.getFullYear()}-${pad(now.getMonth()+1)}`;
+  for(let d=1;d<=daysInMonth(prevYm);d++){
+    const ds=`${prevYm}-${pad(d)}`;
+    const wd=new Date(prev.getFullYear(),prev.getMonth(),d).getDay();
+    if(wd>=1&&wd<=5){
+      add(e1,ds,'09:00',d%3===0?'20:30':'19:00',60,d%3===0?'締め処理':'');
+      add(e2,ds,'10:00',d%5===0?'21:00':'19:00',60);
+    }
+    if(wd===2||wd===4||wd===6)add(e3,ds,'17:00','23:00',30);
+    if(wd===1||wd===3||wd===5)add(e4,ds,'09:00','14:00',0);
+    if(wd===0||wd===6)add(e5,ds,'11:00','20:00',60,wd===0?'日曜ピーク':'');
+  }
+  D.plans[curYm]={};
+  const P=D.plans[curYm];
+  [e1,e2,e3,e4,e5].forEach(id=>P[id]={});
+  for(let d=1;d<=daysInMonth(curYm);d++){
+    const wd=new Date(now.getFullYear(),now.getMonth(),d).getDay();
+    if(wd>=1&&wd<=5){P[e1][d]=8;P[e2][d]=8}
+    if(wd===2||wd===4||wd===6)P[e3][d]=5.5;
+    if(wd===1||wd===3||wd===5)P[e4][d]=5;
+    if(wd===0||wd===6)P[e5][d]=8;
+  }
+  D.seeded=true;
+  saveData(D);
+}
+if(!D.employees.length&&!D.records.length&&!D.seeded)seedDemo();
+
+/* ================= スプレッドシート連携 ================= */
+function payloadRecord(r){
+  const e=empById(r.empId);
+  const c=calcRecord(r);
+  return{id:'r'+r.id,date:r.date,empName:e?e.name:'(削除済)',empType:e?(e.type==='part'?'アルバイト':'正社員'):'',
+    clockIn:r.clockIn||'',clockOut:r.clockOut||'',breakMin:r.breakMin||0,
+    workH:r.clockOut?(c.work/60).toFixed(2):'',otH:r.clockOut?(c.ot/60).toFixed(2):'',
+    nightH:r.clockOut?(c.night/60).toFixed(2):'',note:r.note||''};
+}
+function queueSync(action,payload,records){
+  if(!D.settings.gasOn||!D.settings.gasUrl)return;
+  if(!D.syncQueue)D.syncQueue=[];
+  D.syncQueue.push({action,record:payload,records,ts:Date.now()});
+  saveData(D);gasBadge();flushSync();
+}
+let flushing=false;
+async function flushSync(manual){
+  if(flushing)return;
+  if(!D.settings.gasOn||!D.settings.gasUrl){if(manual===true)alert('連携が有効になっていません');return}
+  if(!D.syncQueue||!D.syncQueue.length){if(manual===true)alert('未送信データはありません');gasBadge();return}
+  flushing=true;
+  try{
+    while(D.syncQueue.length){
+      const item=D.syncQueue[0];
+      await fetch(D.settings.gasUrl,{method:'POST',mode:'no-cors',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({token:D.settings.gasToken||'',action:item.action,record:item.record,records:item.records})});
+      D.syncQueue.shift();saveData(D);
+    }
+  }catch(e){/* オフライン等。キュー保持 */}
+  flushing=false;gasBadge();
+}
+function gasBadge(){
+  const el=document.getElementById('gasStatus');if(!el)return;
+  const n=(D.syncQueue||[]).length;
+  el.textContent=D.settings.gasOn?(n?`未送信:${n}件`:'未送信なし(同期済み)'):'連携:無効';
+}
+function saveGas(){
+  D.settings.gasOn=document.getElementById('gasOn').checked;
+  D.settings.gasUrl=document.getElementById('gasUrl').value.trim();
+  D.settings.gasToken=document.getElementById('gasToken').value.trim();
+  saveData(D);gasBadge();alert('連携設定を保存しました');
+}
+function fillGas(){
+  document.getElementById('gasOn').checked=!!D.settings.gasOn;
+  document.getElementById('gasUrl').value=D.settings.gasUrl||'';
+  document.getElementById('gasToken').value=D.settings.gasToken||'';
+  gasBadge();
+}
+function testGas(){
+  if(!D.settings.gasOn||!D.settings.gasUrl){alert('URLと合言葉を入力し、「連携を有効にする」にチェックして保存してください');return}
+  queueSync('test',{id:'test',date:todayStr(),empName:'接続テスト',empType:'',clockIn:'',clockOut:'',breakMin:0,workH:'',otH:'',nightH:'',note:'管理画面からのテスト送信'});
+  alert('テスト送信しました。スプレッドシートの「打刻ログ」シートに行が追加されるか確認してください(数秒かかります)');
+}
+function bulkSync(){
+  if(!D.settings.gasOn||!D.settings.gasUrl){alert('連携を有効にしてください');return}
+  const recs=D.records.map(payloadRecord);
+  if(!recs.length){alert('送信する記録がありません');return}
+  if(!confirm(`全${recs.length}件をスプレッドシートに送信します。よろしいですか?`))return;
+  if(!D.syncQueue)D.syncQueue=[];
+  for(let i=0;i<recs.length;i+=40)D.syncQueue.push({action:'bulk',records:recs.slice(i,i+40),ts:Date.now()});
+  saveData(D);flushSync();
+}
+setInterval(flushSync,60000);
+window.addEventListener('online',()=>flushSync());
+
 /* ================= タブ・初期化 ================= */
 document.querySelectorAll('nav button').forEach(b=>{
   b.onclick=()=>{
@@ -694,7 +943,7 @@ function renderAll(){renderKpi();renderRecords();renderPlan();renderPay();render
 document.getElementById('gMonth').onchange=renderAll;
 document.getElementById('recEmpFilter').onchange=renderRecords;
 document.getElementById('gMonth').value=todayStr().slice(0,7);
-fillSettings();renderAll();applyLock();
+fillSettings();fillGas();renderAll();applyLock();flushSync();
 if(!isAdmin)document.getElementById('pinInput').focus();
 // 打刻画面(別タブ)での打刻を反映
 window.addEventListener('storage',()=>{D=loadData();renderAll()});

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ケーニッヒ勤怠管理システム|管理ダッシュボード</title>
+<title>ケーニッヒ武蔵小金井 本店勤怠管理システム|管理</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -76,7 +76,12 @@ nav button.on{background:var(--card);color:var(--ai-deep)}
 .ntChip{color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700}
 .ttGutterCol{flex:0 0 44px;position:relative;font-family:var(--mono);font-size:10px;color:var(--sub)}
 .ttGutterCol span{position:absolute;right:6px}
-.ttCol{flex:1;min-width:108px;position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,rgba(34,80,110,.05) 0 52px,transparent 52px 104px),repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px)}
+.ttCol{flex:1;min-width:108px;position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px)}
+.offHours{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(91,102,114,.10) 0 5px,transparent 5px 10px);pointer-events:none}
+.bizLine{position:absolute;left:0;right:0;border-top:1.5px solid rgba(185,138,47,.6);pointer-events:none}
+.imbissLine{position:absolute;left:0;right:0;border-top:1px dashed rgba(185,138,47,.6);pointer-events:none}
+.ttCol.colClosed{background-color:#EBE8DF}
+.closedMark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#ACA391;font-size:14px;font-weight:700;letter-spacing:.35em;writing-mode:vertical-rl;pointer-events:none}
 .ttCol.colToday{background-color:#FCF6E4;border-left:2px solid var(--gold)}
 .ttCol.colPast{background-color:#EFEDE6}
 .colPast .ttBar{opacity:.55;box-shadow:none}
@@ -166,7 +171,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 <!-- PINロック -->
 <div id="lock">
   <div class="lockBox">
-    <h1>ケーニッヒ勤怠管理システム</h1>
+    <h1>ケーニッヒ武蔵小金井 本店勤怠管理システム</h1>
     <p>管理ダッシュボード|管理者PINを入力してください</p>
     <input type="password" id="pinInput" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
     <div id="pinErr"></div>
@@ -176,7 +181,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 </div>
 
 <header>
-  <h1>ケーニッヒ勤怠管理システム<small>ADMIN</small></h1>
+  <h1>ケーニッヒ武蔵小金井 本店<small>管理 ADMIN</small></h1>
   <div class="headCtrl">
     <label style="font-size:11px;opacity:.8">対象月</label>
     <input type="month" id="gMonth">
@@ -240,16 +245,16 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
     <div class="formRow" style="margin-bottom:6px">
       <label>対象<select id="bulkEmp" style="min-width:150px"></select></label>
       <label>曜日<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 0">
-        <label style="flex-direction:row;gap:4px;align-items:center;color:var(--shu)"><input type="checkbox" class="bulkWd" value="0">日</label>
+        <label style="flex-direction:row;gap:4px;align-items:center;color:var(--shu)"><input type="checkbox" class="bulkWd" value="0" checked>日</label>
         <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="1" checked>月</label>
-        <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="2" checked>火</label>
+        <label style="flex-direction:row;gap:4px;align-items:center;color:#ACA391"><input type="checkbox" class="bulkWd" value="2">火(定休)</label>
         <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="3" checked>水</label>
         <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="4" checked>木</label>
         <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="5" checked>金</label>
-        <label style="flex-direction:row;gap:4px;align-items:center;color:var(--ai)"><input type="checkbox" class="bulkWd" value="6">土</label>
+        <label style="flex-direction:row;gap:4px;align-items:center;color:var(--ai)"><input type="checkbox" class="bulkWd" value="6" checked>土</label>
       </div></label>
       <label>時間帯<div style="display:flex;gap:6px;align-items:center;padding:2px 0">
-        <input type="time" id="bulkS" value="09:00" step="1800" style="width:110px">〜<input type="time" id="bulkE" value="18:00" step="1800" style="width:110px">
+        <input type="time" id="bulkS" value="11:00" step="1800" style="width:110px">〜<input type="time" id="bulkE" value="19:30" step="1800" style="width:110px">
       </div></label>
       <label style="flex-direction:row;align-items:center;gap:6px;padding-bottom:10px"><input type="checkbox" id="bulkOff">選択曜日を休みにする</label>
       <button class="btn btnMain" onclick="applyBulk()">対象月に適用</button>
@@ -274,6 +279,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
       <span class="lbl" id="aWkLabel"></span>
       <button onclick="moveAWeek(1)">翌週 ▶</button>
     </div>
+    <p style="text-align:center;font-size:11.5px;color:var(--sub);margin:-4px 0 10px">営業時間 <b style="color:var(--gold)">11:00〜19:30</b>(インビスは19:00まで)|定休日:<b style="color:var(--gold)">火曜日</b></p>
     <div class="ttLegend" id="aLegend"></div>
     <div class="tblWrap"><div id="aTT"></div></div>
     <p class="note" style="margin-top:8px">塗りつぶし=確定シフト/点線「希望」=承認待ち。日付横の「◯人」は出勤人数で、手薄な日がひと目で分かります。<b>点線バーをクリックするとその場で承認</b>できます(却下は下の一覧から)。</p>
@@ -645,6 +651,8 @@ function renderMatrix(){
 const EMP_COLORS=['#22506E','#BE4B2E','#2E6E4E','#B98A2F','#6B4E9B','#3A7A8C','#A24E6E','#5B6672'];
 const empColor=i=>EMP_COLORS[i%EMP_COLORS.length];
 const HOUR_PX=26;
+const BIZ={minH:9,maxH:22,open:'11:00',close:'19:30',imbiss:'19:00',closedWd:2};
+const isClosedDay=ds=>new Date(ds+'T00:00:00').getDay()===BIZ.closedWd;
 const fmtT=t=>t.replace(/^0/,'');
 const fmtC=t=>t.replace(/:00$/,'').replace(/^0/,'');
 let aWk=0,aScrollKey=null;
@@ -700,13 +708,7 @@ function renderAdminWeek(){
       if(q)byDay[ds].push({emp,i:idx[emp.id],s:q.start,e:q.end,type:'req',qid:q.id});
     });
   });
-  let minH=9,maxH=22;
-  Object.values(byDay).flat().forEach(it=>{
-    const sM=toMin(it.s),eM=toMin(it.e);
-    minH=Math.min(minH,Math.floor(sM/60));
-    maxH=Math.max(maxH,eM<=sM?24:Math.ceil(eM/60));
-  });
-  minH=Math.max(0,minH);maxH=Math.min(24,Math.max(maxH,minH+8));
+  const minH=BIZ.minH,maxH=BIZ.maxH; // 9〜22時固定
   const colH=(maxH-minH)*HOUR_PX;
   document.getElementById('aLegend').innerHTML=list.map((e,i)=>
     `<span class="lg"><i style="background:${empColor(i)}"></i>${esc(e.name)}</span>`).join('');
@@ -715,7 +717,8 @@ function renderAdminWeek(){
     const wd=d.getDay(),ds=dstrA(d);
     const cnt=new Set(byDay[ds].filter(x=>x.type==='plan').map(x=>x.emp.id));
     noTime.filter(x=>x.ds===ds).forEach(x=>cnt.add(x.emp.id));
-    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div><div class="w">${'日月火水木金土'[wd]}<span class="c">${cnt.size}人</span></div></div>`;
+    const badge=isClosedDay(ds)?'<span class="c">定休</span>':`<span class="c">${cnt.size}人</span>`;
+    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div><div class="w">${'日月火水木金土'[wd]}${badge}</div></div>`;
   });
   html+='</div>';
   if(noTime.length){
@@ -733,7 +736,20 @@ function renderAdminWeek(){
   html+='</div>';
   days.forEach(d=>{
     const ds=dstrA(d),past=ds<today;
-    html+=`<div class="ttCol${past?' colPast':''}${ds===today?' colToday':''}"${ds===today?' id="aTodayCol"':''} style="height:${colH}px">`;
+    const closed=isClosedDay(ds);
+    html+=`<div class="ttCol${past?' colPast':''}${closed?' colClosed':''}${ds===today?' colToday':''}"${ds===today?' id="aTodayCol"':''} style="height:${colH}px">`;
+    if(closed){
+      html+='<span class="closedMark">定 休 日</span>';
+    }else{
+      const openY=(toMin(BIZ.open)-minH*60)/60*HOUR_PX;
+      const closeY=(toMin(BIZ.close)-minH*60)/60*HOUR_PX;
+      const imbY=(toMin(BIZ.imbiss)-minH*60)/60*HOUR_PX;
+      html+=`<i class="offHours" style="top:0;height:${openY.toFixed(1)}px"></i>`;
+      html+=`<i class="offHours" style="top:${closeY.toFixed(1)}px;height:${(colH-closeY).toFixed(1)}px"></i>`;
+      html+=`<i class="bizLine" style="top:${openY.toFixed(1)}px"></i>`;
+      html+=`<i class="bizLine" style="top:${closeY.toFixed(1)}px"></i>`;
+      html+=`<i class="imbissLine" style="top:${imbY.toFixed(1)}px"></i>`;
+    }
     if(ds===today){
       const nm2=new Date(),mm=nm2.getHours()*60+nm2.getMinutes();
       const top=(mm-minH*60)/60*HOUR_PX;
@@ -743,6 +759,7 @@ function renderAdminWeek(){
       const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440;
       const top=Math.max(0,(sM-minH*60)/60*HOUR_PX);
       const btm=Math.min(colH,(eM-minH*60)/60*HOUR_PX);
+      if(btm<=0||top>=colH)return;
       const bh=Math.max(18,btm-top);
       const w=100/it.laneN;
       const cls='ttBar'+(it.type==='req'?' ttBarReq':'');
@@ -1140,28 +1157,31 @@ function seedDemo(){
   for(let d=1;d<=daysInMonth(prevYm);d++){
     const ds=`${prevYm}-${pad(d)}`;
     const wd=new Date(prev.getFullYear(),prev.getMonth(),d).getDay();
-    if(wd>=1&&wd<=5){
-      add(e1,ds,'09:00',d%3===0?'20:30':'19:00',60,d%3===0?'締め処理':'');
-      add(e2,ds,'10:00',d%5===0?'21:00':'19:00',60);
-    }
-    if(wd===2||wd===4||wd===6)add(e3,ds,'17:00','23:00',30);
-    if(wd===1||wd===3||wd===5)add(e4,ds,'09:00','14:00',0);
-    if(wd===0||wd===6)add(e5,ds,'11:00','20:00',60,wd===0?'日曜ピーク':'');
+    if(wd===2)continue; // 火曜定休
+    if(wd===1||wd===3||wd===4||wd===5)add(e1,ds,'09:30','19:30',60,'');
+    if(wd===6)add(e1,ds,'09:30','20:00',60,'締め作業');
+    if(wd===0||(wd>=3&&wd<=6))add(e2,ds,'10:00','19:30',60);
+    if(wd===5||wd===6)add(e3,ds,'15:00','19:30',0);
+    if(wd===1||wd===3)add(e4,ds,'10:00','15:00',0);
+    if(wd===0||wd===6)add(e5,ds,'11:00','19:30',60,wd===0?'日曜ピーク':'');
   }
-  D.plans[curYm]={};
-  const P=D.plans[curYm];
-  [e1,e2,e3,e4,e5].forEach(id=>P[id]={});
+  D.plans={};D.plans[curYm]={};
+  D.planTimes={};D.planTimes[curYm]={};
+  const P=D.plans[curYm],T=D.planTimes[curYm];
+  const sched={};
+  sched[e1]={wds:[1,3,4,5,6],band:'10:00-19:30',h:8.5};
+  sched[e2]={wds:[0,3,4,5,6],band:'10:30-19:30',h:8};
+  sched[e3]={wds:[5,6],band:'15:00-19:30',h:4.5};
+  sched[e4]={wds:[1,3],band:'10:00-15:00',h:5};
+  sched[e5]={wds:[0,6],band:'11:00-19:30',h:7.5};
+  [e1,e2,e3,e4,e5].forEach(id=>{P[id]={};T[id]={}});
   for(let d=1;d<=daysInMonth(curYm);d++){
     const wd=new Date(now.getFullYear(),now.getMonth(),d).getDay();
-    if(wd>=1&&wd<=5){P[e1][d]=8;P[e2][d]=8}
-    if(wd===2||wd===4||wd===6)P[e3][d]=5.5;
-    if(wd===1||wd===3||wd===5)P[e4][d]=5;
-    if(wd===0||wd===6)P[e5][d]=8;
+    if(wd===2)continue; // 火曜定休
+    [e1,e2,e3,e4,e5].forEach(id=>{
+      if(sched[id].wds.includes(wd)){P[id][d]=sched[id].h;T[id][d]=sched[id].band}
+    });
   }
-  D.planTimes={};D.planTimes[curYm]={};
-  const T=D.planTimes[curYm];
-  const bands={};bands[e1]='09:00-18:00';bands[e2]='10:00-19:00';bands[e3]='17:00-22:30';bands[e4]='09:00-14:00';bands[e5]='11:00-20:00';
-  [e1,e2,e3,e4,e5].forEach(id=>{T[id]={};for(const d in P[id])T[id][d]=bands[id]});
   D.seeded=true;
   saveData(D);
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>勤怠管理 | 管理ダッシュボード</title>
+<title>ケーニッヒ勤怠管理システム|管理ダッシュボード</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -51,6 +51,7 @@ header h1 small{font-weight:400;font-size:10px;letter-spacing:.2em;opacity:.65;m
 nav{max-width:1080px;margin:14px auto 0;padding:0 14px;display:flex;gap:6px;flex-wrap:wrap}
 nav button{padding:10px 18px;background:#EAE6DB;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;color:var(--sub);font-size:13px;font-weight:600}
 nav button.on{background:var(--card);color:var(--ai-deep)}
+.navBadge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;background:var(--shu);color:#fff;border-radius:9px;font-size:11px;font-weight:700}
 main{max-width:1080px;margin:0 auto;padding:0 14px 60px}
 .tab{display:none}
 .tab.on{display:block}
@@ -130,8 +131,8 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 <!-- PINロック -->
 <div id="lock">
   <div class="lockBox">
-    <h1>管理ダッシュボード</h1>
-    <p>管理者PINを入力してください</p>
+    <h1>ケーニッヒ勤怠管理システム</h1>
+    <p>管理ダッシュボード|管理者PINを入力してください</p>
     <input type="password" id="pinInput" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
     <div id="pinErr"></div>
     <button class="go" onclick="checkPin()">解除</button>
@@ -140,7 +141,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 </div>
 
 <header>
-  <h1>管理ダッシュボード<small>ADMIN</small></h1>
+  <h1>ケーニッヒ勤怠管理システム<small>ADMIN</small></h1>
   <div class="headCtrl">
     <label style="font-size:11px;opacity:.8">対象月</label>
     <input type="month" id="gMonth">
@@ -160,6 +161,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 <nav>
   <button class="on" data-tab="rec">勤怠記録</button>
   <button data-tab="plan">稼働調整</button>
+  <button data-tab="req">シフト承認<span class="navBadge" id="reqCnt" style="display:none"></span></button>
   <button data-tab="pay">給与試算</button>
   <button data-tab="emp">従業員・設定</button>
 </nav>
@@ -211,17 +213,40 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
         <label style="flex-direction:row;gap:4px;align-items:center"><input type="checkbox" class="bulkWd" value="5" checked>金</label>
         <label style="flex-direction:row;gap:4px;align-items:center;color:var(--ai)"><input type="checkbox" class="bulkWd" value="6">土</label>
       </div></label>
-      <label>時間(h/日)<input type="number" id="bulkH" value="8" min="0" max="24" step="0.5" style="width:80px"></label>
+      <label>時間帯<div style="display:flex;gap:6px;align-items:center;padding:2px 0">
+        <input type="time" id="bulkS" value="09:00" step="1800" style="width:110px">〜<input type="time" id="bulkE" value="18:00" step="1800" style="width:110px">
+      </div></label>
+      <label style="flex-direction:row;align-items:center;gap:6px;padding-bottom:10px"><input type="checkbox" id="bulkOff">選択曜日を休みにする</label>
       <button class="btn btnMain" onclick="applyBulk()">対象月に適用</button>
       <button class="btn btnGhost" onclick="copyPrevPlans()">前月の予定をコピー</button>
       <button class="btn btnGhost" onclick="clearPlans()">対象月の予定をクリア</button>
     </div>
-    <p class="note">選んだ曜日に予定時間を一括設定します(該当曜日の既存予定は上書き)。時間を0にして適用するとその曜日を休みにできます。細かい個別調整は下のシフト表で直接編集してください。</p>
+    <p class="note">選んだ曜日に勤務時間帯を一括設定します(該当曜日の既存予定は上書き)。実働は拘束時間から自動休憩(6h超45分/8h超60分)を控除して計算されます。「休みにする」にチェックして適用すると、その曜日の予定を消せます。細かい個別調整は下のシフト表で直接編集してください。</p>
   </div>
   <div class="card">
     <h2>予定シフト表(h/日)</h2>
-    <p class="note" style="margin-bottom:10px">予定稼働時間を入力(0.5h単位・空欄=休み)。変更は上の着地予測に即反映。土日=ベージュ/実績確定日=緑。</p>
+    <p class="note" style="margin-bottom:10px">予定実働時間を入力(0.5h単位・空欄=休み)。変更は上の着地予測に即反映。土日=ベージュ/実績確定日=緑。※ここで手入力したセルは時間数のみの予定となり、打刻画面の出勤表では「◯h」表示になります(時間帯で表示するには一括入力かシフト承認を使用)。</p>
     <div class="tblWrap"><table class="matrix"><thead id="mxHead"></thead><tbody id="mxBody"></tbody></table></div>
+  </div>
+</section>
+
+<!-- ===== シフト承認 ===== -->
+<section id="tab-req" class="tab">
+  <div class="card">
+    <div class="formRow">
+      <label>表示<select id="reqView" onchange="renderReqs()">
+        <option value="pending">承認待ちのみ</option><option value="all">すべて(履歴)</option>
+      </select></label>
+      <button class="btn btnMain" onclick="approveAll()">承認待ちを一括承認</button>
+    </div>
+    <div class="tblWrap"><table>
+      <thead><tr>
+        <th>申請日時</th><th>従業員</th><th>希望日</th><th>時間帯</th><th class="r">実働見込</th><th>備考</th><th>状態</th><th></th>
+      </tr></thead>
+      <tbody id="reqBody"></tbody>
+    </table></div>
+    <div id="reqEmpty" class="empty" style="display:none">承認待ちの申請はありません</div>
+    <p class="note" style="margin-top:10px">打刻画面の「出勤表・シフト希望」からスタッフが申請した勤務希望です。承認すると予定シフト(稼働調整タブ)に反映され、着地予測にも即時連動します。既に予定がある日は承認時に上書きされます。</p>
   </div>
 </section>
 
@@ -507,6 +532,8 @@ function planSum(ym,empId,fromDay){
 function setPlan(ym,empId,day,val){
   if(!D.plans[ym])D.plans[ym]={};if(!D.plans[ym][empId])D.plans[ym][empId]={};
   if(val>0)D.plans[ym][empId][day]=val;else delete D.plans[ym][empId][day];
+  // 手動編集は時間数のみのため、対応する時間帯表示はクリア
+  if(D.planTimes&&D.planTimes[ym]&&D.planTimes[ym][empId])delete D.planTimes[ym][empId][day];
   saveData(D);renderPlan();
 }
 function setCap(empId,val){empById(empId).capHours=Number(val)||0;saveData(D);renderPlan();renderEmps()}
@@ -566,6 +593,77 @@ function renderMatrix(){
     row+=`<td class="num" style="font-weight:600;padding:0 6px">${tot}h</td>`;
     return `<tr>${row}</tr>`;
   }).join('');
+}
+
+/* ================= シフト承認 ================= */
+function reqStatusBadge(st){
+  return st==='pending'?'<span class="badge stWarn">承認待ち</span>'
+    :st==='approved'?'<span class="badge stOk">承認済</span>'
+    :st==='rejected'?'<span class="badge stOver">却下</span>'
+    :'<span class="badge" style="background:#EEE;color:#888">取消</span>';
+}
+function fmtTs(ts){const d=new Date(ts);return`${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+function renderReqs(){
+  const v=document.getElementById('reqView').value;
+  let arr=(D.shiftReqs||[]).filter(q=>q.status!=='canceled');
+  const pendingCnt=arr.filter(q=>q.status==='pending').length;
+  if(v==='pending')arr=arr.filter(q=>q.status==='pending');
+  arr=[...arr].sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1)||a.date.localeCompare(b.date)||a.ts-b.ts);
+  document.getElementById('reqBody').innerHTML=arr.map(q=>{
+    const e=empById(q.empId);
+    const nm=e?esc(e.name):'(削除済)';
+    const wd='日月火水木金土'[new Date(q.date+'T00:00:00').getDay()];
+    const cur=e?(planGet(q.date.slice(0,7),q.empId)[Number(q.date.slice(8))]||0):0;
+    const note=q.status==='pending'&&cur?`<span style="color:var(--shu)">既存予定${cur}hを上書き</span>`:'';
+    const ops=q.status==='pending'
+      ?`<button class="btnSm" style="border-color:var(--midori);color:var(--midori)" onclick="approveReq(${q.id})">承認</button>
+         <button class="btnDanger" onclick="rejectReq(${q.id})">却下</button>`
+      :(q.decidedTs?`<span style="font-size:11px;color:var(--sub)">${fmtTs(q.decidedTs)}</span>`:'');
+    return`<tr>
+      <td class="num" style="font-size:12px;color:var(--sub)">${fmtTs(q.ts)}</td>
+      <td>${nm}</td>
+      <td class="num">${q.date.slice(5).replace('-','/')}(${wd})</td>
+      <td class="num">${q.start}〜${q.end}</td>
+      <td class="r num">${spanWork(q.start,q.end)}h</td>
+      <td style="font-size:12px">${note}</td>
+      <td>${reqStatusBadge(q.status)}</td>
+      <td>${ops}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('reqEmpty').style.display=arr.length?'none':'block';
+  const b=document.getElementById('reqCnt');
+  b.style.display=pendingCnt?'':'none';
+  b.textContent=pendingCnt;
+}
+function applyReqToPlan(q){
+  const ym=q.date.slice(0,7),day=Number(q.date.slice(8));
+  setPlanRaw(ym,q.empId,day,spanWork(q.start,q.end),`${q.start}-${q.end}`);
+}
+function approveReq(id){
+  const q=(D.shiftReqs||[]).find(x=>x.id===id);
+  if(!q||q.status!=='pending')return;
+  if(!empById(q.empId)){alert('この従業員は削除されています。却下してください。');return}
+  const cur=planGet(q.date.slice(0,7),q.empId)[Number(q.date.slice(8))]||0;
+  const h=spanWork(q.start,q.end);
+  if(cur&&cur!==h&&!confirm(`${q.date} には既に予定 ${cur}h があります。${q.start}〜${q.end}(実働${h}h)で上書きしますか?`))return;
+  applyReqToPlan(q);
+  q.status='approved';q.decidedTs=Date.now();
+  saveData(D);renderAll();
+}
+function rejectReq(id){
+  const q=(D.shiftReqs||[]).find(x=>x.id===id);
+  if(!q||q.status!=='pending')return;
+  if(!confirm(`${q.date} ${q.start}〜${q.end} の希望を却下しますか?`))return;
+  q.status='rejected';q.decidedTs=Date.now();
+  saveData(D);renderAll();
+}
+function approveAll(){
+  const pend=(D.shiftReqs||[]).filter(q=>q.status==='pending'&&empById(q.empId));
+  if(!pend.length){alert('承認待ちの申請はありません');return}
+  const ow=pend.filter(q=>{const c=planGet(q.date.slice(0,7),q.empId)[Number(q.date.slice(8))]||0;return c&&c!==spanWork(q.start,q.end)}).length;
+  if(!confirm(`承認待ち ${pend.length}件 をすべて承認します。${ow?`(うち${ow}件は既存の予定を上書きします)`:''}よろしいですか?`))return;
+  pend.forEach(q=>{applyReqToPlan(q);q.status='approved';q.decidedTs=Date.now()});
+  saveData(D);renderAll();
 }
 
 /* ================= 給与試算 ================= */
@@ -689,22 +787,43 @@ function renderEmps(){
 }
 
 /* ================= シフト一括入力 ================= */
-function setPlanRaw(ym,empId,day,val){
+function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩控除:6h超45分/8h超60分)
+  let sp=(toMin(e)-toMin(s))/60;if(sp<=0)sp+=24;
+  const br=sp>8?1:(sp>6?0.75:0);
+  return Math.max(0,Math.round((sp-br)*2)/2);
+}
+function setPlanRaw(ym,empId,day,val,band){
   if(!D.plans[ym])D.plans[ym]={};if(!D.plans[ym][empId])D.plans[ym][empId]={};
-  if(val>0)D.plans[ym][empId][day]=val;else delete D.plans[ym][empId][day];
+  if(!D.planTimes)D.planTimes={};
+  if(!D.planTimes[ym])D.planTimes[ym]={};if(!D.planTimes[ym][empId])D.planTimes[ym][empId]={};
+  if(val>0){
+    D.plans[ym][empId][day]=val;
+    if(band)D.planTimes[ym][empId][day]=band;else delete D.planTimes[ym][empId][day];
+  }else{
+    delete D.plans[ym][empId][day];
+    delete D.planTimes[ym][empId][day];
+  }
 }
 function applyBulk(){
   const ym=gm();
   const wds=[...document.querySelectorAll('.bulkWd:checked')].map(x=>Number(x.value));
   if(!wds.length){alert('曜日を選択してください');return}
-  const h=Number(document.getElementById('bulkH').value)||0;
+  const off=document.getElementById('bulkOff').checked;
+  const s=document.getElementById('bulkS').value,e2=document.getElementById('bulkE').value;
+  let h=0,band='';
+  if(!off){
+    if(!s||!e2){alert('時間帯を入力してください');return}
+    h=spanWork(s,e2);
+    if(h<=0){alert('時間帯の指定が正しくありません');return}
+    band=`${s}-${e2}`;
+  }
   const sel=document.getElementById('bulkEmp').value;
   const targets=sel?[empById(sel)]:empList();
   if(!targets.length){alert('対象の従業員がいません');return}
   const[y,m]=ym.split('-').map(Number);
   targets.forEach(e=>{
     for(let d=1;d<=daysInMonth(ym);d++){
-      if(wds.includes(new Date(y,m-1,d).getDay()))setPlanRaw(ym,e.id,d,h);
+      if(wds.includes(new Date(y,m-1,d).getDay()))setPlanRaw(ym,e.id,d,h,band);
     }
   });
   saveData(D);renderAll();
@@ -718,14 +837,19 @@ function copyPrevPlans(){
   if(!src||!Object.keys(src).length){alert(`前月(${prevYm})の予定シフトがありません`);return}
   if(D.plans[ym]&&Object.keys(D.plans[ym]).length&&!confirm('対象月の既存予定を上書きしてコピーします。よろしいですか?'))return;
   D.plans[ym]=JSON.parse(JSON.stringify(src));
+  if(!D.planTimes)D.planTimes={};
+  D.planTimes[ym]=D.planTimes[prevYm]?JSON.parse(JSON.stringify(D.planTimes[prevYm])):{};
   const n=daysInMonth(ym); // 月末日数差の調整
   for(const id in D.plans[ym])for(const d in D.plans[ym][id])if(Number(d)>n)delete D.plans[ym][id][d];
+  for(const id in D.planTimes[ym])for(const d in D.planTimes[ym][id])if(Number(d)>n)delete D.planTimes[ym][id][d];
   saveData(D);renderAll();
 }
 function clearPlans(){
   const ym=gm();
   if(!confirm(`${ym} の予定シフトを全てクリアしますか?`))return;
-  delete D.plans[ym];saveData(D);renderAll();
+  delete D.plans[ym];
+  if(D.planTimes)delete D.planTimes[ym];
+  saveData(D);renderAll();
 }
 
 
@@ -859,6 +983,10 @@ function seedDemo(){
     if(wd===1||wd===3||wd===5)P[e4][d]=5;
     if(wd===0||wd===6)P[e5][d]=8;
   }
+  D.planTimes={};D.planTimes[curYm]={};
+  const T=D.planTimes[curYm];
+  const bands={};bands[e1]='09:00-18:00';bands[e2]='10:00-19:00';bands[e3]='17:00-22:30';bands[e4]='09:00-14:00';bands[e5]='11:00-20:00';
+  [e1,e2,e3,e4,e5].forEach(id=>{T[id]={};for(const d in P[id])T[id][d]=bands[id]});
   D.seeded=true;
   saveData(D);
 }
@@ -939,7 +1067,7 @@ document.querySelectorAll('nav button').forEach(b=>{
     document.getElementById('tab-'+b.dataset.tab).classList.add('on');
   };
 });
-function renderAll(){renderKpi();renderRecords();renderPlan();renderPay();renderEmps()}
+function renderAll(){renderKpi();renderRecords();renderPlan();renderReqs();renderPay();renderEmps()}
 document.getElementById('gMonth').onchange=renderAll;
 document.getElementById('recEmpFilter').onchange=renderRecords;
 document.getElementById('gMonth').value=todayStr().slice(0,7);

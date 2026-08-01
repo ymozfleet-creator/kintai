@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>出退勤 打刻</title>
+<title>ケーニッヒ勤怠管理システム|打刻</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -40,6 +40,8 @@ main{max-width:720px;width:100%;margin:0 auto;padding:24px 14px 40px;flex:1}
 .stampIn:hover{box-shadow:0 0 0 8px rgba(46,110,78,.12)}
 .stampOut{border-color:var(--shu);color:var(--shu)}
 .stampOut:hover{box-shadow:0 0 0 8px rgba(190,75,46,.12)}
+.stampReq{border-color:var(--gold);color:var(--gold)}
+.stampReq:hover{box-shadow:0 0 0 8px rgba(185,138,47,.12)}
 #punchMsg{min-height:28px;font-size:15px;font-weight:700;margin-top:8px}
 #punchMsg.ok{color:var(--midori)} #punchMsg.ng{color:var(--shu)}
 
@@ -51,6 +53,39 @@ td{padding:9px 10px;border-bottom:1px solid var(--line)}
 .bOff{background:#EEEBE2;color:#777}
 .empty{text-align:center;color:var(--sub);font-size:13px;padding:24px 0}
 
+/* 週間出勤表・シフト希望 */
+.wkNav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.wkNav button{padding:6px 14px;border:1px solid var(--line);background:#fff;border-radius:6px;font-size:13px}
+.wkNav button:hover{border-color:var(--ai);color:var(--ai)}
+.wkNav .lbl{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ai-deep);min-width:110px;text-align:center}
+.tblWrap{overflow-x:auto}
+.wk{border-collapse:collapse;font-size:12px;width:100%}
+.wk th{padding:6px 4px;text-align:center;min-width:60px;font-size:11px;line-height:1.4}
+.wk th.wSun{background:#7A3B2A}
+.wk th.wSat{background:#2E5570}
+.wk th.wToday{box-shadow:inset 0 0 0 2px var(--gold)}
+.wk td{padding:4px 3px;border-bottom:1px solid var(--line);text-align:center;height:46px}
+.wk td.nm{text-align:left;white-space:nowrap;font-weight:500;font-size:13px;position:sticky;left:0;background:#fff;z-index:1;padding-left:6px}
+.wk td.cMine{cursor:pointer;background:#FDFBF4}
+.wk td.cMine:hover{background:#F5EDD5}
+.wk td.cPast{background:#F1EFE8}
+.cPlan{display:inline-block;padding:3px 6px;border-radius:4px;background:#EAF2ED;color:var(--midori);font-weight:700;font-size:10.5px;line-height:1.5;font-family:var(--mono)}
+.cReq{display:inline-block;padding:2px 5px;border-radius:4px;background:#FBF3E4;color:#8A6414;font-weight:700;font-size:10px;line-height:1.5}
+.you{font-size:10px;color:var(--gold);font-weight:700}
+#wkMsg{min-height:20px;font-size:13px;font-weight:700;margin-top:8px}
+#wkMsg.ok{color:var(--midori)} #wkMsg.ng{color:var(--shu)}
+dialog{border:none;border-radius:12px;padding:22px;max-width:380px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(23,58,82,.45)}
+dialog h3{font-size:15px;margin-bottom:6px;color:var(--ai-deep)}
+.dlgRow{display:flex;gap:14px;margin:14px 0;justify-content:center}
+.dlgRow label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--sub)}
+.dlgRow input{font-family:inherit;font-size:16px;padding:8px;border:1px solid var(--line);border-radius:6px}
+.dlgBtns{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+.dlgBtns button{padding:9px 18px;border-radius:6px;border:none;font-size:14px;font-weight:600}
+.bMain{background:var(--ai);color:#fff}
+.bMain:hover{background:var(--ai-deep)}
+.bGhost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+
 footer{text-align:center;padding:14px;font-size:11px;color:#B9B2A2}
 footer a{color:#B9B2A2;text-decoration:none}
 footer a:hover{color:var(--ai)}
@@ -61,7 +96,7 @@ footer a:hover{color:var(--ai)}
 <body>
 
 <header>
-  <h1>出退勤 打刻<small>TIME CLOCK</small></h1>
+  <h1>ケーニッヒ勤怠管理システム<small>TIME CLOCK</small></h1>
   <div id="headClock" class="num" style="font-size:14px;opacity:.9"></div>
 </header>
 
@@ -76,6 +111,7 @@ footer a:hover{color:var(--ai)}
       <div class="punchBtns">
         <button class="stampBtn stampIn" onclick="punch('in')">出勤<small>CLOCK IN</small></button>
         <button class="stampBtn stampOut" onclick="punch('out')">退勤<small>CLOCK OUT</small></button>
+        <button class="stampBtn stampReq" onclick="gotoShift()">シフト希望<small>REQUEST</small></button>
       </div>
       <div id="punchMsg"></div>
     </div>
@@ -89,7 +125,34 @@ footer a:hover{color:var(--ai)}
     </table>
     <div id="todayEmpty" class="empty" style="display:none">本日の打刻はまだありません</div>
   </div>
+
+  <div class="card" id="shiftCard">
+    <h2>出勤表・シフト希望(週間)</h2>
+    <div class="wkNav">
+      <button onclick="moveWeek(-1)">◀ 前週</button>
+      <span class="lbl" id="wkLabel"></span>
+      <button onclick="moveWeek(1)">翌週 ▶</button>
+    </div>
+    <div class="tblWrap"><table class="wk"><thead id="wkHead"></thead><tbody id="wkBody"></tbody></table></div>
+    <div id="wkMsg"></div>
+    <p style="font-size:12px;color:var(--sub);line-height:1.8;margin-top:4px" id="wkHint"></p>
+    <p style="font-size:11px;color:var(--sub);margin-top:4px"><span class="cPlan">9:00<br>▶ 18:00</span>=確定シフト(開始▶終了) <span class="cReq">希望<br>18:00-22:00</span>=承認待ち。希望は管理者の承認後にシフトへ反映されます。承認待ちのセルをもう一度タップすると取り消せます。</p>
+  </div>
 </main>
+
+<dialog id="reqDlg">
+  <h3>勤務希望の申請</h3>
+  <p style="font-size:13px;color:var(--sub)" id="reqWho"></p>
+  <div class="dlgRow">
+    <label>開始<input type="time" id="reqStart" value="09:00" step="1800"></label>
+    <label>終了<input type="time" id="reqEnd" value="18:00" step="1800"></label>
+  </div>
+  <p style="font-size:12px;color:var(--sub)" id="reqNote">申請後、管理者が承認すると出勤表に反映されます。</p>
+  <div class="dlgBtns">
+    <button class="bGhost" onclick="document.getElementById('reqDlg').close()">キャンセル</button>
+    <button class="bMain" onclick="submitReq()">申請する</button>
+  </div>
+</dialog>
 
 <footer><span id="syncInfo" style="margin-right:10px;color:var(--shu)"></span><a href="admin.html">管理</a></footer>
 
@@ -237,6 +300,95 @@ function renderSelect(){
     list.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
 }
 
+/* ===== 週間出勤表・シフト希望 ===== */
+let wkOffset=0,reqTarget=null;
+function gotoShift(){
+  document.getElementById('shiftCard').scrollIntoView({behavior:'smooth'});
+  if(!document.getElementById('punchEmp').value){
+    const m=document.getElementById('wkMsg');m.textContent='上で名前を選択すると希望を申請できます';m.className='ng';
+  }
+}
+function moveWeek(d){wkOffset+=d;renderWeek()}
+function weekDates(){
+  const t=new Date();t.setHours(0,0,0,0);
+  const mon=new Date(t);mon.setDate(t.getDate()-((t.getDay()+6)%7)+wkOffset*7); // 月曜始まり
+  return[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
+}
+const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+function pendingReq(empId,ds){return(D.shiftReqs||[]).find(q=>q.empId===empId&&q.date===ds&&q.status==='pending')}
+function planFor(empId,ds){
+  const ym=ds.slice(0,7),day=Number(ds.slice(8));
+  return(D.plans&&D.plans[ym]&&D.plans[ym][empId]&&D.plans[ym][empId][day])||0;
+}
+function planTimeFor(empId,ds){
+  const ym=ds.slice(0,7),day=Number(ds.slice(8));
+  return(D.planTimes&&D.planTimes[ym]&&D.planTimes[ym][empId]&&D.planTimes[ym][empId][day])||'';
+}
+const fmtT=t=>t.replace(/^0/,''); // 09:00→9:00
+function fmtBand(band){const[s,e]=band.split('-');return`${fmtT(s)}<br>▶ ${fmtT(e)}`}
+function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩を控除:6h超45分/8h超60分)
+  let sp=(toMin(e)-toMin(s))/60;if(sp<=0)sp+=24;
+  const br=sp>8?1:(sp>6?0.75:0);
+  return Math.max(0,Math.round((sp-br)*2)/2);
+}
+function renderWeek(){
+  const days=weekDates(),sel=document.getElementById('punchEmp').value,today=todayStr();
+  document.getElementById('wkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
+  document.getElementById('wkHead').innerHTML='<tr><th style="text-align:left;padding-left:6px">従業員</th>'+days.map(d=>{
+    const wd=d.getDay(),ds=dstr(d);
+    return`<th class="${wd===0?'wSun':wd===6?'wSat':''}${ds===today?' wToday':''}">${d.getMonth()+1}/${d.getDate()}<br>${'日月火水木金土'[wd]}</th>`;
+  }).join('')+'</tr>';
+  const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  document.getElementById('wkBody').innerHTML=list.map(e=>{
+    let row=`<td class="nm">${esc(e.name)}${e.id===sel?' <span class="you">▶選択中</span>':''}</td>`;
+    days.forEach(d=>{
+      const ds=dstr(d),p=planFor(e.id,ds),band=planTimeFor(e.id,ds),q=pendingReq(e.id,ds);
+      const past=ds<today,mine=e.id===sel&&!past;
+      let inner='';
+      if(q)inner=`<span class="cReq">希望<br>${fmtT(q.start)}-${fmtT(q.end)}</span>`;
+      else if(band)inner=`<span class="cPlan">${fmtBand(band)}</span>`;
+      else if(p)inner=`<span class="cPlan">${p}h</span>`;
+      row+=`<td class="${mine?'cMine':''}${past?' cPast':''}"${mine?` onclick="cellTap('${e.id}','${ds}')"`:''}>${inner}</td>`;
+    });
+    return`<tr>${row}</tr>`;
+  }).join('');
+  document.getElementById('wkHint').textContent=sel
+    ?'自分の行(▶選択中)の今日以降のセルをタップすると、勤務希望を申請できます。'
+    :'名前を選択すると、自分の行から勤務希望を申請できます。';
+}
+function cellTap(empId,ds){
+  const m=document.getElementById('wkMsg');m.textContent='';m.className='';
+  const q=pendingReq(empId,ds);
+  if(q){ // 申請済み→取り消し
+    if(confirm(`${ds.slice(5).replace('-','/')} の希望(${q.start}〜${q.end})を取り消しますか?`)){
+      q.status='canceled';q.decidedTs=Date.now();saveData(D);renderWeek();
+      m.textContent='希望を取り消しました';m.className='ok';
+    }
+    return;
+  }
+  reqTarget={empId,ds};
+  const e=empById(empId),p=planFor(empId,ds);
+  const wd='日月火水木金土'[new Date(ds+'T00:00:00').getDay()];
+  document.getElementById('reqWho').textContent=`${e.name} さん|${ds.slice(5).replace('-','/')}(${wd})`;
+  document.getElementById('reqNote').textContent=p
+    ?`この日は既に ${p}h の確定シフトがあります。承認されると新しい時間で上書きされます。`
+    :'申請後、管理者が承認すると出勤表に反映されます。';
+  document.getElementById('reqDlg').showModal();
+}
+function submitReq(){
+  const s=document.getElementById('reqStart').value,e2=document.getElementById('reqEnd').value;
+  if(!s||!e2){alert('開始・終了時刻を入力してください');return}
+  const h=spanWork(s,e2);
+  if(h<=0){alert('時間の指定が正しくありません');return}
+  if(!D.shiftReqs)D.shiftReqs=[];
+  D.shiftReqs.push({id:D.seq++,empId:reqTarget.empId,date:reqTarget.ds,start:s,end:e2,hours:h,status:'pending',ts:Date.now()});
+  saveData(D);
+  document.getElementById('reqDlg').close();
+  renderWeek();
+  const m=document.getElementById('wkMsg');
+  m.textContent=`${reqTarget.ds.slice(5).replace('-','/')} ${fmtT(s)}〜${fmtT(e2)}(実働${h}h見込)の希望を申請しました(承認待ち)`;m.className='ok';
+}
+
 /* ===== デモデータ(初回のみ・管理画面と同一) ===== */
 function seedDemo(){
   const mk=(name,type,o)=>({id:'e'+(D.seq++),name,type,hourlyWage:o.w||0,monthlySalary:o.s||0,baseHours:o.bh||160,capHours:o.cap||0,commuteDay:o.cm||0,active:true});
@@ -276,15 +428,20 @@ function seedDemo(){
     if(wd===1||wd===3||wd===5)P[e4][d]=5;
     if(wd===0||wd===6)P[e5][d]=8;
   }
+  D.planTimes={};D.planTimes[curYm]={};
+  const T=D.planTimes[curYm];
+  const bands={};bands[e1]='09:00-18:00';bands[e2]='10:00-19:00';bands[e3]='17:00-22:30';bands[e4]='09:00-14:00';bands[e5]='11:00-20:00';
+  [e1,e2,e3,e4,e5].forEach(id=>{T[id]={};for(const d in P[id])T[id][d]=bands[id]});
   D.seeded=true; // デモ投入済みフラグ(全データ削除後の再投入を防止)
   saveData(D);
 }
 
 if(!D.employees.length&&!D.records.length&&!D.seeded)seedDemo();
-renderSelect();renderToday();syncBadge();flushSync();
+renderSelect();renderToday();renderWeek();syncBadge();flushSync();
+document.getElementById('punchEmp').addEventListener('change',renderWeek);
 // 他タブ(管理画面)での変更を反映
-window.addEventListener('storage',()=>{D=loadData();renderSelect();renderToday()});
-setInterval(()=>{D=loadData();renderToday()},30000);
+window.addEventListener('storage',()=>{D=loadData();renderSelect();renderToday();renderWeek()});
+setInterval(()=>{D=loadData();renderToday();renderWeek()},30000);
 </script>
 </body>
 </html>

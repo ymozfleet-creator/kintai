@@ -51,6 +51,7 @@ td{padding:9px 10px;border-bottom:1px solid var(--line)}
 .badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:700}
 .bOn{background:#EAF2ED;color:var(--midori)}
 .bOff{background:#EEEBE2;color:#777}
+.bPre{background:#FBF3E4;color:#8A6414}
 .empty{text-align:center;color:var(--sub);font-size:13px;padding:24px 0}
 
 /* 週間出勤表・シフト希望 */
@@ -60,30 +61,41 @@ td{padding:9px 10px;border-bottom:1px solid var(--line)}
 .wkNav .lbl{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ai-deep);min-width:110px;text-align:center}
 .tblWrap{overflow-x:auto}
 /* タイムライン(時間割) */
-.ttLegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;align-items:center}
-.lg{padding:2px 8px;border-radius:5px;color:var(--ink)}
+.ttLegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;align-items:center}
+.lg{padding:2px 8px;border-radius:5px;color:var(--ink);background:#F7F5EE}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .lgSel{font-weight:700;color:var(--ai-deep);background:#F6EFD9;box-shadow:inset 0 0 0 1px var(--gold)}
-.ttHeadRow,.ttBodyRow,.ttNtRow{display:flex;min-width:660px}
-.ttGutterHead{flex:0 0 46px}
-.ttDayHead{flex:1;min-width:86px;text-align:center;background:var(--ai-deep);color:#F2EFE6;font-size:11px;padding:6px 2px;line-height:1.4;border-left:1px solid rgba(255,255,255,.15)}
+.myWeek{background:#F2F6F3;border:1px solid #CFE0D6;border-radius:8px;padding:8px 12px;font-size:12.5px;line-height:1.9;margin-bottom:10px}
+.myWeek b{color:var(--midori)}
+.ttHeadRow,.ttBodyRow,.ttNtRow{display:flex;min-width:720px}
+.ttGutterHead{flex:0 0 44px}
+.ttDayHead{flex:1;min-width:108px;text-align:center;background:var(--ai-deep);color:#F2EFE6;padding:5px 2px;line-height:1.4;border-left:1px solid rgba(255,255,255,.15)}
+.ttDayHead .d{font-size:14px;font-weight:700;font-family:var(--mono)}
+.ttDayHead .w{font-size:10px;opacity:.9}
+.ttDayHead .c{display:inline-block;margin-left:5px;font-size:9.5px;background:rgba(255,255,255,.2);border-radius:8px;padding:0 6px;font-family:var(--mono)}
 .hSun{background:#7A3B2A}
 .hSat{background:#2E5570}
-.hToday{box-shadow:inset 0 0 0 2px var(--gold)}
+.hToday{box-shadow:inset 0 -3px 0 var(--gold)}
+.hToday .d{color:var(--gold)}
 .ttNtRow .ttGutterHead{font-size:9px;color:var(--sub);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
-.ttNt{flex:1;min-width:86px;border-left:1px solid var(--line);padding:3px 2px;display:flex;flex-wrap:wrap;gap:3px;background:#FBFAF5;align-content:flex-start}
+.ttNt{flex:1;min-width:108px;border-left:1px solid var(--line);padding:3px 2px;display:flex;flex-wrap:wrap;gap:3px;background:#FBFAF5;align-content:flex-start}
 .ntChip{color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700}
-.ttGutterCol{flex:0 0 46px;position:relative;font-family:var(--mono);font-size:10px;color:var(--sub)}
+.ttGutterCol{flex:0 0 44px;position:relative;font-family:var(--mono);font-size:10px;color:var(--sub)}
 .ttGutterCol span{position:absolute;right:6px}
-.ttCol{flex:1;min-width:86px;position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px);cursor:pointer}
-.ttCol:hover{background-color:#FDFBF4}
-.ttCol.colPast{background-color:#F1EFE8;cursor:default}
-.ttCol.colPast:hover{background-color:#F1EFE8}
-.ttBar{position:absolute;box-sizing:border-box;padding:3px 0;border-radius:4px;background:var(--c);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(255,255,255,.7)}
-.ttBar b{writing-mode:vertical-rl;font-size:10px;font-weight:700;letter-spacing:.06em;line-height:1;white-space:nowrap}
-.ttBar small{writing-mode:vertical-rl;font-size:8.5px;font-family:var(--mono);opacity:.92;line-height:1;white-space:nowrap}
-.ttBarReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c)}
-.ttBarMine{box-shadow:0 0 0 2px var(--gold);z-index:2}
+.ttCol{flex:1;min-width:108px;position:relative;border-left:1px solid var(--line);cursor:pointer;background-image:repeating-linear-gradient(to bottom,rgba(34,80,110,.05) 0 52px,transparent 52px 104px),repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px)}
+.ttCol:hover{background-color:#FDF9EE}
+.ttCol.colToday{background-color:#FCF6E4;border-left:2px solid var(--gold)}
+.ttCol.colPast{background-color:#EFEDE6;cursor:default}
+.ttCol.colPast:hover{background-color:#EFEDE6}
+.colPast .ttBar{opacity:.55;box-shadow:none}
+.plusHint{position:absolute;right:4px;top:4px;width:18px;height:18px;border-radius:50%;border:1.5px dashed var(--gold);color:var(--gold);font-size:13px;line-height:15px;text-align:center;opacity:.9;pointer-events:none;font-weight:700}
+.ttBar{position:absolute;box-sizing:border-box;padding:3px 2px;border-radius:5px;background:var(--c);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;border:1px solid rgba(255,255,255,.75);box-shadow:0 1px 3px rgba(28,39,51,.25)}
+.ttBar b{font-size:10.5px;font-weight:700;line-height:1.3;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.ttBar small{font-size:9px;font-family:var(--mono);opacity:.95;line-height:1.35;white-space:nowrap}
+.ttBar .tag{font-size:8px;font-weight:700;background:rgba(255,255,255,.92);color:var(--c);border-radius:3px;padding:0 4px;margin-bottom:1px}
+.ttBarReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c);box-shadow:none}
+.ttBarReq .tag{background:var(--c);color:#fff}
+.ttBarMine{box-shadow:0 0 0 2.5px var(--gold);z-index:2}
 .nowLine{position:absolute;left:0;right:0;height:2px;background:var(--shu);opacity:.65;pointer-events:none;z-index:3}
 .you{font-size:10px;color:var(--gold);font-weight:700}
 #wkMsg{min-height:20px;font-size:13px;font-weight:700;margin-top:8px}
@@ -132,12 +144,12 @@ footer a:hover{color:var(--ai)}
   </div>
 
   <div class="card">
-    <h2>本日の出勤状況</h2>
+    <h2>本日の出勤(シフト+打刻状況)</h2>
     <table>
-      <thead><tr><th>従業員</th><th>出勤</th><th>退勤</th><th>状態</th></tr></thead>
+      <thead><tr><th>従業員</th><th>本日のシフト</th><th>出勤</th><th>退勤</th><th>状態</th></tr></thead>
       <tbody id="todayBody"></tbody>
     </table>
-    <div id="todayEmpty" class="empty" style="display:none">本日の打刻はまだありません</div>
+    <div id="todayEmpty" class="empty" style="display:none">本日のシフト・打刻はまだありません</div>
   </div>
 
   <div class="card" id="shiftCard">
@@ -148,10 +160,11 @@ footer a:hover{color:var(--ai)}
       <button onclick="moveWeek(1)">翌週 ▶</button>
     </div>
     <div class="ttLegend" id="ttLegend"></div>
+    <div class="myWeek" id="myWeek" style="display:none"></div>
     <div class="tblWrap"><div id="tt"></div></div>
     <div id="wkMsg"></div>
     <p style="font-size:12px;color:var(--sub);line-height:1.8;margin-top:4px" id="wkHint"></p>
-    <p style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.8">塗りつぶしバー=確定シフト/点線バー=承認待ちの希望(色は従業員ごと・金枠=自分)。赤い横線=現在時刻。希望は管理者の承認後にシフトへ反映されます。自分の承認待ちバーをタップすると取り消せます。</p>
+    <p style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.8">塗りつぶしバー=確定シフト/点線「希望」バー=承認待ち(色は従業員ごと・金枠=自分)。日付の横の「◯人」はその日の出勤人数、赤い横線は現在時刻です。希望は管理者の承認後にシフトへ反映されます。</p>
   </div>
 </main>
 
@@ -301,13 +314,31 @@ function punch(kind){
 
 /* ===== 表示 ===== */
 function renderToday(){
-  const recs=D.records.filter(r=>r.date===todayStr());
-  document.getElementById('todayBody').innerHTML=recs.map(r=>{
-    const e=empById(r.empId);if(!e)return'';
+  const ds=todayStr();
+  const recs=D.records.filter(r=>r.date===ds);
+  const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  const usedRec=new Set(),rows=[];
+  // シフトがある人は打刻前でも表示(出勤前)
+  list.forEach(e=>{
+    const r=recs.find(x=>x.empId===e.id);
+    const band=planTimeFor(e.id,ds),p=planFor(e.id,ds);
+    let sched='−';
+    if(band){const[s,e2]=band.split('-');sched=`${fmtT(s)}〜${fmtT(e2)}`}
+    else if(p)sched=`${p}h(時間未定)`;
+    if(!r&&sched==='−')return; // 予定も打刻もない人は非表示
+    if(r)usedRec.add(r.id);
+    const st=r?(r.clockOut?'<span class="badge bOff">退勤済</span>':'<span class="badge bOn">勤務中</span>'):'<span class="badge bPre">出勤前</span>';
+    rows.push(`<tr><td>${esc(e.name)}</td><td class="num">${sched}</td><td class="num">${r?(r.clockIn||'−'):'−'}</td><td class="num">${r?(r.clockOut||'−'):'−'}</td><td>${st}</td></tr>`);
+  });
+  // 予定なしで打刻した人・退職者の記録も表示
+  recs.forEach(r=>{
+    if(usedRec.has(r.id))return;
+    const e=empById(r.empId);if(!e)return;
     const st=r.clockOut?'<span class="badge bOff">退勤済</span>':'<span class="badge bOn">勤務中</span>';
-    return `<tr><td>${esc(e.name)}</td><td class="num">${r.clockIn||'−'}</td><td class="num">${r.clockOut||'−'}</td><td>${st}</td></tr>`;
-  }).join('');
-  document.getElementById('todayEmpty').style.display=recs.length?'none':'block';
+    rows.push(`<tr><td>${esc(e.name)}</td><td class="num">−</td><td class="num">${r.clockIn||'−'}</td><td class="num">${r.clockOut||'−'}</td><td>${st}</td></tr>`);
+  });
+  document.getElementById('todayBody').innerHTML=rows.join('');
+  document.getElementById('todayEmpty').style.display=rows.length?'none':'block';
 }
 function renderSelect(){
   const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
@@ -340,6 +371,7 @@ function planTimeFor(empId,ds){
   return(D.planTimes&&D.planTimes[ym]&&D.planTimes[ym][empId]&&D.planTimes[ym][empId][day])||'';
 }
 const fmtT=t=>t.replace(/^0/,''); // 09:00→9:00
+const fmtC=t=>t.replace(/:00$/,'').replace(/^0/,''); // 17:00→17 / 09:30→9:30(バー内の圧縮表記)
 function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩を控除:6h超45分/8h超60分)
   let sp=(toMin(e)-toMin(s))/60;if(sp<=0)sp+=24;
   const br=sp>8?1:(sp>6?0.75:0);
@@ -348,28 +380,41 @@ function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩を控除:6h超
 const EMP_COLORS=['#22506E','#BE4B2E','#2E6E4E','#B98A2F','#6B4E9B','#3A7A8C','#A24E6E','#5B6672'];
 const empColor=i=>EMP_COLORS[i%EMP_COLORS.length];
 const HOUR_PX=26;
+function layoutDay(arr){ // 重ならないシフトは同じレーンに詰め、バー幅を最大化
+  const sorted=[...arr].sort((a,b)=>toMin(a.s)-toMin(b.s)||toMin(a.e)-toMin(b.e));
+  const ends=[];
+  sorted.forEach(it=>{
+    const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440;
+    let li=ends.findIndex(x=>x<=sM);
+    if(li<0){li=ends.length;ends.push(0)}
+    ends[li]=eM;it.lane=li;
+  });
+  const n=Math.max(1,ends.length);
+  sorted.forEach(it=>it.laneN=n);
+  return sorted;
+}
 function renderWeek(){
   const days=weekDates(),sel=document.getElementById('punchEmp').value,today=todayStr();
   document.getElementById('wkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
   const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
-  const N=Math.max(list.length,1),laneW=100/N;
+  const idx={};list.forEach((e,i)=>idx[e.id]=i);
 
-  // バー(時間帯あり)と時間未定チップを収集
-  const items=[],noTime=[];
+  // 日別にバー(時間帯あり)と時間未定チップを収集
+  const byDay={},noTime=[];
   days.forEach(d=>{
-    const ds=dstr(d);
-    list.forEach((emp,i)=>{
+    const ds=dstr(d);byDay[ds]=[];
+    list.forEach(emp=>{
       const band=planTimeFor(emp.id,ds);
-      if(band){const[s,e]=band.split('-');items.push({ds,i,emp,s,e,type:'plan'})}
-      else{const p=planFor(emp.id,ds);if(p)noTime.push({ds,i,emp,hours:p})}
+      if(band){const[s,e]=band.split('-');byDay[ds].push({emp,i:idx[emp.id],s,e,type:'plan'})}
+      else{const p=planFor(emp.id,ds);if(p)noTime.push({ds,i:idx[emp.id],emp,hours:p})}
       const q=pendingReq(emp.id,ds);
-      if(q)items.push({ds,i,emp,s:q.start,e:q.end,type:'req'}); // 後入れ=前面表示
+      if(q)byDay[ds].push({emp,i:idx[emp.id],s:q.start,e:q.end,type:'req'});
     });
   });
 
-  // 表示時間レンジ(データに合わせ自動拡張・最低9〜22時)
+  // 表示時間レンジ(最低9〜22時・データに合わせ自動拡張)
   let minH=9,maxH=22;
-  items.forEach(it=>{
+  Object.values(byDay).flat().forEach(it=>{
     const sM=toMin(it.s),eM=toMin(it.e);
     minH=Math.min(minH,Math.floor(sM/60));
     maxH=Math.max(maxH,eM<=sM?24:Math.ceil(eM/60));
@@ -382,15 +427,32 @@ function renderWeek(){
     `<span class="lg${e.id===sel?' lgSel':''}"><i style="background:${empColor(i)}"></i>${esc(e.name)}${e.id===sel?' ▶選択中':''}</span>`
   ).join('');
 
-  // ヘッダー行
+  // 今週のあなたのシフト(名前選択時)
+  const mw=document.getElementById('myWeek');
+  if(sel){
+    const parts=[];let tot=0,rq=0;
+    days.forEach(d=>{
+      const ds=dstr(d),wd='日月火水木金土'[d.getDay()];
+      const band=planTimeFor(sel,ds),p=planFor(sel,ds);
+      if(band){const[s,e]=band.split('-');parts.push(`${d.getDate()}日(${wd}) ${fmtT(s)}-${fmtT(e)}`);tot+=p}
+      else if(p){parts.push(`${d.getDate()}日(${wd}) ${p}h`);tot+=p}
+      if(pendingReq(sel,ds))rq++;
+    });
+    mw.style.display='';
+    mw.innerHTML=`<b>今週のあなたのシフト:</b>${parts.length?parts.join(' / '):'なし'}(実働合計 ${Math.round(tot*10)/10}h)${rq?`<span style="color:#8A6414;font-weight:700"> |承認待ちの希望 ${rq}件</span>`:''}`;
+  }else mw.style.display='none';
+
+  // ヘッダー行(日付+曜日+出勤人数)
   let html='<div class="ttHeadRow"><div class="ttGutterHead"></div>';
   days.forEach(d=>{
     const wd=d.getDay(),ds=dstr(d);
-    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}">${d.getMonth()+1}/${d.getDate()}<br>${'日月火水木金土'[wd]}</div>`;
+    const cnt=new Set(byDay[ds].filter(x=>x.type==='plan').map(x=>x.emp.id));
+    noTime.filter(x=>x.ds===ds).forEach(x=>cnt.add(x.emp.id));
+    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div><div class="w">${'日月火水木金土'[wd]}<span class="c">${cnt.size}人</span></div></div>`;
   });
   html+='</div>';
 
-  // 時間未定行(時間数のみの予定がある場合)
+  // 時間未定行
   if(noTime.length){
     html+='<div class="ttNtRow"><div class="ttGutterHead">時間未定</div>';
     days.forEach(d=>{
@@ -402,38 +464,56 @@ function renderWeek(){
     html+='</div>';
   }
 
-  // 本体(時刻目盛+7日分の列)
+  // 本体
   html+=`<div class="ttBodyRow"><div class="ttGutterCol" style="height:${colH}px">`;
   for(let h=minH;h<=maxH;h++)html+=`<span style="top:${(h-minH)*HOUR_PX-6}px">${h}:00</span>`;
   html+='</div>';
   days.forEach(d=>{
     const ds=dstr(d),past=ds<today;
-    html+=`<div class="ttCol${past?' colPast':''}" style="height:${colH}px" onclick="dayTap('${ds}')">`;
+    html+=`<div class="ttCol${past?' colPast':''}${ds===today?' colToday':''}"${ds===today?' id="ttTodayCol"':''} style="height:${colH}px" onclick="dayTap('${ds}')">`;
+    if(sel&&!past)html+='<i class="plusHint">＋</i>';
     if(ds===today){
       const nm2=new Date(),mm=nm2.getHours()*60+nm2.getMinutes();
       const top=(mm-minH*60)/60*HOUR_PX;
       if(top>=0&&top<=colH)html+=`<i class="nowLine" style="top:${top.toFixed(1)}px"></i>`;
     }
-    items.filter(it=>it.ds===ds).forEach(it=>{
+    layoutDay(byDay[ds]).forEach(it=>{
       const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440; // 日またぎは24:00で打ち切り表示
       const top=Math.max(0,(sM-minH*60)/60*HOUR_PX);
       const btm=Math.min(colH,(eM-minH*60)/60*HOUR_PX);
-      const bh=Math.max(16,btm-top);
+      const bh=Math.max(18,btm-top);
+      const w=100/it.laneN;
       const mine=it.emp.id===sel;
       const cls='ttBar'+(it.type==='req'?' ttBarReq':'')+(mine?' ttBarMine':'');
-      const title=`${it.emp.name} ${fmtT(it.s)}〜${fmtT(it.e)}${it.type==='req'?'(承認待ち)':''}`;
+      const title=`${it.emp.name} ${fmtT(it.s)}〜${fmtT(it.e)}${it.type==='req'?'(承認待ちの希望)':'(確定シフト)'}`;
       const click=mine&&!past?` onclick="event.stopPropagation();cellTap('${it.emp.id}','${ds}')"`:'';
       const short=esc(it.emp.name.split(/\s+/)[0]);
-      html+=`<span class="${cls}" style="left:${(it.i*laneW).toFixed(2)}%;width:${laneW.toFixed(2)}%;top:${top.toFixed(1)}px;height:${bh.toFixed(1)}px;--c:${empColor(it.i)}" title="${title}"${click}><b>${it.type==='req'?'希望 ':''}${short}</b>${bh>=52?`<small>${fmtT(it.s)}-${fmtT(it.e)}</small>`:''}</span>`;
+      let inner=(it.type==='req'?'<span class="tag">希望</span>':'')+`<b>${short}</b>`;
+      if(bh>=46)inner+=`<small>${fmtT(it.s)}</small><small>${fmtT(it.e)}</small>`;
+      else if(bh>=30)inner+=`<small>${fmtC(it.s)}-${fmtC(it.e)}</small>`;
+      html+=`<span class="${cls}" style="left:calc(${(it.lane*w).toFixed(2)}% + 1px);width:calc(${w.toFixed(2)}% - 2px);top:${top.toFixed(1)}px;height:${bh.toFixed(1)}px;--c:${empColor(it.i)}" title="${title}"${click}>${inner}</span>`;
     });
     html+='</div>';
   });
   html+='</div>';
   document.getElementById('tt').innerHTML=html;
+  scrollToToday();
 
   document.getElementById('wkHint').textContent=sel
-    ?'入りたい日の列の空いている部分をタップすると、勤務希望を申請できます。'
+    ?'入りたい日の列の空いている時間帯をタップ→希望を申請。自分のバー(金枠)をタップ→点線は取り消し、確定は変更申請ができます。'
     :'名前を選択すると、勤務希望を申請できます。';
+}
+let ttScrollKey=null;
+function scrollToToday(){ // 今週表示のとき、今日の列が見える位置へ(週切替時のみ)
+  if(ttScrollKey===wkOffset)return;
+  ttScrollKey=wkOffset;
+  if(wkOffset!==0)return;
+  try{
+    const col=document.getElementById('ttTodayCol');
+    const wrap=document.getElementById('tt').parentElement;
+    if(col&&wrap&&typeof col.offsetLeft==='number'&&typeof wrap.scrollLeft==='number')
+      wrap.scrollLeft=Math.max(0,col.offsetLeft-60);
+  }catch(e){}
 }
 function dayTap(ds){
   const sel=document.getElementById('punchEmp').value;

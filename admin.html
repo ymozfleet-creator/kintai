@@ -52,6 +52,41 @@ nav{max-width:1080px;margin:14px auto 0;padding:0 14px;display:flex;gap:6px;flex
 nav button{padding:10px 18px;background:#EAE6DB;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;color:var(--sub);font-size:13px;font-weight:600}
 nav button.on{background:var(--card);color:var(--ai-deep)}
 .navBadge{display:inline-block;min-width:18px;padding:1px 6px;margin-left:6px;background:var(--shu);color:#fff;border-radius:9px;font-size:11px;font-weight:700}
+
+/* 週間タイムライン(シフト承認タブ) */
+.wkNav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.wkNav button{padding:6px 14px;border:1px solid var(--line);background:#fff;border-radius:6px;font-size:13px}
+.wkNav button:hover{border-color:var(--ai);color:var(--ai)}
+.wkNav .lbl{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ai-deep);min-width:110px;text-align:center}
+.ttLegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;align-items:center}
+.lg{padding:2px 8px;border-radius:5px;color:var(--ink);background:#F7F5EE}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ttHeadRow,.ttBodyRow,.ttNtRow{display:flex;min-width:720px}
+.ttGutterHead{flex:0 0 44px}
+.ttDayHead{flex:1;min-width:108px;text-align:center;background:var(--ai-deep);color:#F2EFE6;padding:5px 2px;line-height:1.4;border-left:1px solid rgba(255,255,255,.15)}
+.ttDayHead .d{font-size:14px;font-weight:700;font-family:var(--mono)}
+.ttDayHead .w{font-size:10px;opacity:.9}
+.ttDayHead .c{display:inline-block;margin-left:5px;font-size:9.5px;background:rgba(255,255,255,.2);border-radius:8px;padding:0 6px;font-family:var(--mono)}
+.hSun{background:#7A3B2A}
+.hSat{background:#2E5570}
+.hToday{box-shadow:inset 0 -3px 0 var(--gold)}
+.hToday .d{color:var(--gold)}
+.ttNtRow .ttGutterHead{font-size:9px;color:var(--sub);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.ttNt{flex:1;min-width:108px;border-left:1px solid var(--line);padding:3px 2px;display:flex;flex-wrap:wrap;gap:3px;background:#FBFAF5;align-content:flex-start}
+.ntChip{color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700}
+.ttGutterCol{flex:0 0 44px;position:relative;font-family:var(--mono);font-size:10px;color:var(--sub)}
+.ttGutterCol span{position:absolute;right:6px}
+.ttCol{flex:1;min-width:108px;position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,rgba(34,80,110,.05) 0 52px,transparent 52px 104px),repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px)}
+.ttCol.colToday{background-color:#FCF6E4;border-left:2px solid var(--gold)}
+.ttCol.colPast{background-color:#EFEDE6}
+.colPast .ttBar{opacity:.55;box-shadow:none}
+.ttBar{position:absolute;box-sizing:border-box;padding:3px 2px;border-radius:5px;background:var(--c);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;border:1px solid rgba(255,255,255,.75);box-shadow:0 1px 3px rgba(28,39,51,.25)}
+.ttBar b{font-size:10.5px;font-weight:700;line-height:1.3;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.ttBar small{font-size:9px;font-family:var(--mono);opacity:.95;line-height:1.35;white-space:nowrap}
+.ttBar .tag{font-size:8px;font-weight:700;background:rgba(255,255,255,.92);color:var(--c);border-radius:3px;padding:0 4px;margin-bottom:1px}
+.ttBarReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c);box-shadow:none;cursor:pointer}
+.ttBarReq:hover{background:#FFF3D6}
+.nowLine{position:absolute;left:0;right:0;height:2px;background:var(--shu);opacity:.65;pointer-events:none;z-index:3}
 main{max-width:1080px;margin:0 auto;padding:0 14px 60px}
 .tab{display:none}
 .tab.on{display:block}
@@ -232,6 +267,17 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 
 <!-- ===== シフト承認 ===== -->
 <section id="tab-req" class="tab">
+  <div class="card">
+    <h2 style="margin-bottom:8px">週間シフト(確定+承認待ち)</h2>
+    <div class="wkNav">
+      <button onclick="moveAWeek(-1)">◀ 前週</button>
+      <span class="lbl" id="aWkLabel"></span>
+      <button onclick="moveAWeek(1)">翌週 ▶</button>
+    </div>
+    <div class="ttLegend" id="aLegend"></div>
+    <div class="tblWrap"><div id="aTT"></div></div>
+    <p class="note" style="margin-top:8px">塗りつぶし=確定シフト/点線「希望」=承認待ち。日付横の「◯人」は出勤人数で、手薄な日がひと目で分かります。<b>点線バーをクリックするとその場で承認</b>できます(却下は下の一覧から)。</p>
+  </div>
   <div class="card">
     <div class="formRow">
       <label>表示<select id="reqView" onchange="renderReqs()">
@@ -595,6 +641,134 @@ function renderMatrix(){
   }).join('');
 }
 
+/* ================= 週間タイムライン(シフト承認タブ) ================= */
+const EMP_COLORS=['#22506E','#BE4B2E','#2E6E4E','#B98A2F','#6B4E9B','#3A7A8C','#A24E6E','#5B6672'];
+const empColor=i=>EMP_COLORS[i%EMP_COLORS.length];
+const HOUR_PX=26;
+const fmtT=t=>t.replace(/^0/,'');
+const fmtC=t=>t.replace(/:00$/,'').replace(/^0/,'');
+let aWk=0,aScrollKey=null;
+function moveAWeek(d){aWk+=d;renderAdminWeek()}
+const dstrA=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+function aWeekDates(){
+  const t=new Date();t.setHours(0,0,0,0);
+  const mon=new Date(t);mon.setDate(t.getDate()-((t.getDay()+6)%7)+aWk*7);
+  return[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
+}
+function aPlanTime(empId,ds){
+  const ym=ds.slice(0,7),day=Number(ds.slice(8));
+  return(D.planTimes&&D.planTimes[ym]&&D.planTimes[ym][empId]&&D.planTimes[ym][empId][day])||'';
+}
+function aPending(empId,ds){return(D.shiftReqs||[]).find(q=>q.empId===empId&&q.date===ds&&q.status==='pending')}
+function layoutDay(arr){
+  const sorted=[...arr].sort((a,b)=>toMin(a.s)-toMin(b.s)||toMin(a.e)-toMin(b.e));
+  const ends=[];
+  sorted.forEach(it=>{
+    const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440;
+    let li=ends.findIndex(x=>x<=sM);
+    if(li<0){li=ends.length;ends.push(0)}
+    ends[li]=eM;it.lane=li;
+  });
+  const n=Math.max(1,ends.length);
+  sorted.forEach(it=>it.laneN=n);
+  return sorted;
+}
+function approveFromChart(id){
+  const q=(D.shiftReqs||[]).find(x=>x.id===id);
+  if(!q||q.status!=='pending')return;
+  const e=empById(q.empId);
+  if(!confirm(`${e?e.name:'?'} ${q.date.slice(5).replace('-','/')} ${fmtT(q.start)}〜${fmtT(q.end)} の希望を承認しますか?`))return;
+  approveReq(id);
+}
+function renderAdminWeek(){
+  const el=document.getElementById('aTT');if(!el)return;
+  const days=aWeekDates(),today=todayStr();
+  document.getElementById('aWkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
+  const list=empList();
+  const idx={};list.forEach((e,i)=>idx[e.id]=i);
+  const byDay={},noTime=[];
+  days.forEach(d=>{
+    const ds=dstrA(d);byDay[ds]=[];
+    list.forEach(emp=>{
+      const band=aPlanTime(emp.id,ds);
+      if(band){const[s,e]=band.split('-');byDay[ds].push({emp,i:idx[emp.id],s,e,type:'plan'})}
+      else{
+        const p=planGet(ds.slice(0,7),emp.id)[Number(ds.slice(8))]||0;
+        if(p)noTime.push({ds,i:idx[emp.id],emp,hours:p});
+      }
+      const q=aPending(emp.id,ds);
+      if(q)byDay[ds].push({emp,i:idx[emp.id],s:q.start,e:q.end,type:'req',qid:q.id});
+    });
+  });
+  let minH=9,maxH=22;
+  Object.values(byDay).flat().forEach(it=>{
+    const sM=toMin(it.s),eM=toMin(it.e);
+    minH=Math.min(minH,Math.floor(sM/60));
+    maxH=Math.max(maxH,eM<=sM?24:Math.ceil(eM/60));
+  });
+  minH=Math.max(0,minH);maxH=Math.min(24,Math.max(maxH,minH+8));
+  const colH=(maxH-minH)*HOUR_PX;
+  document.getElementById('aLegend').innerHTML=list.map((e,i)=>
+    `<span class="lg"><i style="background:${empColor(i)}"></i>${esc(e.name)}</span>`).join('');
+  let html='<div class="ttHeadRow"><div class="ttGutterHead"></div>';
+  days.forEach(d=>{
+    const wd=d.getDay(),ds=dstrA(d);
+    const cnt=new Set(byDay[ds].filter(x=>x.type==='plan').map(x=>x.emp.id));
+    noTime.filter(x=>x.ds===ds).forEach(x=>cnt.add(x.emp.id));
+    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div><div class="w">${'日月火水木金土'[wd]}<span class="c">${cnt.size}人</span></div></div>`;
+  });
+  html+='</div>';
+  if(noTime.length){
+    html+='<div class="ttNtRow"><div class="ttGutterHead">時間未定</div>';
+    days.forEach(d=>{
+      const ds=dstrA(d);
+      html+='<div class="ttNt">'+noTime.filter(x=>x.ds===ds).map(x=>
+        `<span class="ntChip" style="background:${empColor(x.i)}" title="${esc(x.emp.name)} ${x.hours}h(時間帯未設定)">${esc(x.emp.name.split(/\s+/)[0])} ${x.hours}h</span>`
+      ).join('')+'</div>';
+    });
+    html+='</div>';
+  }
+  html+=`<div class="ttBodyRow"><div class="ttGutterCol" style="height:${colH}px">`;
+  for(let h=minH;h<=maxH;h++)html+=`<span style="top:${(h-minH)*HOUR_PX-6}px">${h}:00</span>`;
+  html+='</div>';
+  days.forEach(d=>{
+    const ds=dstrA(d),past=ds<today;
+    html+=`<div class="ttCol${past?' colPast':''}${ds===today?' colToday':''}"${ds===today?' id="aTodayCol"':''} style="height:${colH}px">`;
+    if(ds===today){
+      const nm2=new Date(),mm=nm2.getHours()*60+nm2.getMinutes();
+      const top=(mm-minH*60)/60*HOUR_PX;
+      if(top>=0&&top<=colH)html+=`<i class="nowLine" style="top:${top.toFixed(1)}px"></i>`;
+    }
+    layoutDay(byDay[ds]).forEach(it=>{
+      const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440;
+      const top=Math.max(0,(sM-minH*60)/60*HOUR_PX);
+      const btm=Math.min(colH,(eM-minH*60)/60*HOUR_PX);
+      const bh=Math.max(18,btm-top);
+      const w=100/it.laneN;
+      const cls='ttBar'+(it.type==='req'?' ttBarReq':'');
+      const title=`${it.emp.name} ${fmtT(it.s)}〜${fmtT(it.e)}${it.type==='req'?'(承認待ち|クリックで承認)':'(確定シフト)'}`;
+      const click=it.type==='req'?` onclick="approveFromChart(${it.qid})"`:'';
+      const short=esc(it.emp.name.split(/\s+/)[0]);
+      let inner=(it.type==='req'?'<span class="tag">希望</span>':'')+`<b>${short}</b>`;
+      if(bh>=46)inner+=`<small>${fmtT(it.s)}</small><small>${fmtT(it.e)}</small>`;
+      else if(bh>=30)inner+=`<small>${fmtC(it.s)}-${fmtC(it.e)}</small>`;
+      html+=`<span class="${cls}" style="left:calc(${(it.lane*w).toFixed(2)}% + 1px);width:calc(${w.toFixed(2)}% - 2px);top:${top.toFixed(1)}px;height:${bh.toFixed(1)}px;--c:${empColor(it.i)}" title="${title}"${click}>${inner}</span>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+  if(aScrollKey!==aWk){
+    aScrollKey=aWk;
+    if(aWk===0){try{
+      const col=document.getElementById('aTodayCol');
+      const wrap=el.parentElement;
+      if(col&&wrap&&typeof col.offsetLeft==='number'&&typeof wrap.scrollLeft==='number')
+        wrap.scrollLeft=Math.max(0,col.offsetLeft-60);
+    }catch(e){}}
+  }
+}
+
 /* ================= シフト承認 ================= */
 function reqStatusBadge(st){
   return st==='pending'?'<span class="badge stWarn">承認待ち</span>'
@@ -634,6 +808,7 @@ function renderReqs(){
   const b=document.getElementById('reqCnt');
   b.style.display=pendingCnt?'':'none';
   b.textContent=pendingCnt;
+  renderAdminWeek();
 }
 function applyReqToPlan(q){
   const ym=q.date.slice(0,7),day=Number(q.date.slice(8));

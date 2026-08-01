@@ -59,18 +59,32 @@ td{padding:9px 10px;border-bottom:1px solid var(--line)}
 .wkNav button:hover{border-color:var(--ai);color:var(--ai)}
 .wkNav .lbl{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ai-deep);min-width:110px;text-align:center}
 .tblWrap{overflow-x:auto}
-.wk{border-collapse:collapse;font-size:12px;width:100%}
-.wk th{padding:6px 4px;text-align:center;min-width:60px;font-size:11px;line-height:1.4}
-.wk th.wSun{background:#7A3B2A}
-.wk th.wSat{background:#2E5570}
-.wk th.wToday{box-shadow:inset 0 0 0 2px var(--gold)}
-.wk td{padding:4px 3px;border-bottom:1px solid var(--line);text-align:center;height:46px}
-.wk td.nm{text-align:left;white-space:nowrap;font-weight:500;font-size:13px;position:sticky;left:0;background:#fff;z-index:1;padding-left:6px}
-.wk td.cMine{cursor:pointer;background:#FDFBF4}
-.wk td.cMine:hover{background:#F5EDD5}
-.wk td.cPast{background:#F1EFE8}
-.cPlan{display:inline-block;padding:3px 6px;border-radius:4px;background:#EAF2ED;color:var(--midori);font-weight:700;font-size:10.5px;line-height:1.5;font-family:var(--mono)}
-.cReq{display:inline-block;padding:2px 5px;border-radius:4px;background:#FBF3E4;color:#8A6414;font-weight:700;font-size:10px;line-height:1.5}
+/* タイムライン(時間割) */
+.ttLegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;align-items:center}
+.lg{padding:2px 8px;border-radius:5px;color:var(--ink)}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.lgSel{font-weight:700;color:var(--ai-deep);background:#F6EFD9;box-shadow:inset 0 0 0 1px var(--gold)}
+.ttHeadRow,.ttBodyRow,.ttNtRow{display:flex;min-width:660px}
+.ttGutterHead{flex:0 0 46px}
+.ttDayHead{flex:1;min-width:86px;text-align:center;background:var(--ai-deep);color:#F2EFE6;font-size:11px;padding:6px 2px;line-height:1.4;border-left:1px solid rgba(255,255,255,.15)}
+.hSun{background:#7A3B2A}
+.hSat{background:#2E5570}
+.hToday{box-shadow:inset 0 0 0 2px var(--gold)}
+.ttNtRow .ttGutterHead{font-size:9px;color:var(--sub);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.ttNt{flex:1;min-width:86px;border-left:1px solid var(--line);padding:3px 2px;display:flex;flex-wrap:wrap;gap:3px;background:#FBFAF5;align-content:flex-start}
+.ntChip{color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700}
+.ttGutterCol{flex:0 0 46px;position:relative;font-family:var(--mono);font-size:10px;color:var(--sub)}
+.ttGutterCol span{position:absolute;right:6px}
+.ttCol{flex:1;min-width:86px;position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px);cursor:pointer}
+.ttCol:hover{background-color:#FDFBF4}
+.ttCol.colPast{background-color:#F1EFE8;cursor:default}
+.ttCol.colPast:hover{background-color:#F1EFE8}
+.ttBar{position:absolute;box-sizing:border-box;padding:3px 0;border-radius:4px;background:var(--c);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(255,255,255,.7)}
+.ttBar b{writing-mode:vertical-rl;font-size:10px;font-weight:700;letter-spacing:.06em;line-height:1;white-space:nowrap}
+.ttBar small{writing-mode:vertical-rl;font-size:8.5px;font-family:var(--mono);opacity:.92;line-height:1;white-space:nowrap}
+.ttBarReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c)}
+.ttBarMine{box-shadow:0 0 0 2px var(--gold);z-index:2}
+.nowLine{position:absolute;left:0;right:0;height:2px;background:var(--shu);opacity:.65;pointer-events:none;z-index:3}
 .you{font-size:10px;color:var(--gold);font-weight:700}
 #wkMsg{min-height:20px;font-size:13px;font-weight:700;margin-top:8px}
 #wkMsg.ok{color:var(--midori)} #wkMsg.ng{color:var(--shu)}
@@ -133,10 +147,11 @@ footer a:hover{color:var(--ai)}
       <span class="lbl" id="wkLabel"></span>
       <button onclick="moveWeek(1)">翌週 ▶</button>
     </div>
-    <div class="tblWrap"><table class="wk"><thead id="wkHead"></thead><tbody id="wkBody"></tbody></table></div>
+    <div class="ttLegend" id="ttLegend"></div>
+    <div class="tblWrap"><div id="tt"></div></div>
     <div id="wkMsg"></div>
     <p style="font-size:12px;color:var(--sub);line-height:1.8;margin-top:4px" id="wkHint"></p>
-    <p style="font-size:11px;color:var(--sub);margin-top:4px"><span class="cPlan">9:00<br>▶ 18:00</span>=確定シフト(開始▶終了) <span class="cReq">希望<br>18:00-22:00</span>=承認待ち。希望は管理者の承認後にシフトへ反映されます。承認待ちのセルをもう一度タップすると取り消せます。</p>
+    <p style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.8">塗りつぶしバー=確定シフト/点線バー=承認待ちの希望(色は従業員ごと・金枠=自分)。赤い横線=現在時刻。希望は管理者の承認後にシフトへ反映されます。自分の承認待ちバーをタップすると取り消せます。</p>
   </div>
 </main>
 
@@ -325,36 +340,107 @@ function planTimeFor(empId,ds){
   return(D.planTimes&&D.planTimes[ym]&&D.planTimes[ym][empId]&&D.planTimes[ym][empId][day])||'';
 }
 const fmtT=t=>t.replace(/^0/,''); // 09:00→9:00
-function fmtBand(band){const[s,e]=band.split('-');return`${fmtT(s)}<br>▶ ${fmtT(e)}`}
 function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩を控除:6h超45分/8h超60分)
   let sp=(toMin(e)-toMin(s))/60;if(sp<=0)sp+=24;
   const br=sp>8?1:(sp>6?0.75:0);
   return Math.max(0,Math.round((sp-br)*2)/2);
 }
+const EMP_COLORS=['#22506E','#BE4B2E','#2E6E4E','#B98A2F','#6B4E9B','#3A7A8C','#A24E6E','#5B6672'];
+const empColor=i=>EMP_COLORS[i%EMP_COLORS.length];
+const HOUR_PX=26;
 function renderWeek(){
   const days=weekDates(),sel=document.getElementById('punchEmp').value,today=todayStr();
   document.getElementById('wkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
-  document.getElementById('wkHead').innerHTML='<tr><th style="text-align:left;padding-left:6px">従業員</th>'+days.map(d=>{
-    const wd=d.getDay(),ds=dstr(d);
-    return`<th class="${wd===0?'wSun':wd===6?'wSat':''}${ds===today?' wToday':''}">${d.getMonth()+1}/${d.getDate()}<br>${'日月火水木金土'[wd]}</th>`;
-  }).join('')+'</tr>';
   const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
-  document.getElementById('wkBody').innerHTML=list.map(e=>{
-    let row=`<td class="nm">${esc(e.name)}${e.id===sel?' <span class="you">▶選択中</span>':''}</td>`;
-    days.forEach(d=>{
-      const ds=dstr(d),p=planFor(e.id,ds),band=planTimeFor(e.id,ds),q=pendingReq(e.id,ds);
-      const past=ds<today,mine=e.id===sel&&!past;
-      let inner='';
-      if(q)inner=`<span class="cReq">希望<br>${fmtT(q.start)}-${fmtT(q.end)}</span>`;
-      else if(band)inner=`<span class="cPlan">${fmtBand(band)}</span>`;
-      else if(p)inner=`<span class="cPlan">${p}h</span>`;
-      row+=`<td class="${mine?'cMine':''}${past?' cPast':''}"${mine?` onclick="cellTap('${e.id}','${ds}')"`:''}>${inner}</td>`;
+  const N=Math.max(list.length,1),laneW=100/N;
+
+  // バー(時間帯あり)と時間未定チップを収集
+  const items=[],noTime=[];
+  days.forEach(d=>{
+    const ds=dstr(d);
+    list.forEach((emp,i)=>{
+      const band=planTimeFor(emp.id,ds);
+      if(band){const[s,e]=band.split('-');items.push({ds,i,emp,s,e,type:'plan'})}
+      else{const p=planFor(emp.id,ds);if(p)noTime.push({ds,i,emp,hours:p})}
+      const q=pendingReq(emp.id,ds);
+      if(q)items.push({ds,i,emp,s:q.start,e:q.end,type:'req'}); // 後入れ=前面表示
     });
-    return`<tr>${row}</tr>`;
-  }).join('');
+  });
+
+  // 表示時間レンジ(データに合わせ自動拡張・最低9〜22時)
+  let minH=9,maxH=22;
+  items.forEach(it=>{
+    const sM=toMin(it.s),eM=toMin(it.e);
+    minH=Math.min(minH,Math.floor(sM/60));
+    maxH=Math.max(maxH,eM<=sM?24:Math.ceil(eM/60));
+  });
+  minH=Math.max(0,minH);maxH=Math.min(24,Math.max(maxH,minH+8));
+  const colH=(maxH-minH)*HOUR_PX;
+
+  // 凡例
+  document.getElementById('ttLegend').innerHTML=list.map((e,i)=>
+    `<span class="lg${e.id===sel?' lgSel':''}"><i style="background:${empColor(i)}"></i>${esc(e.name)}${e.id===sel?' ▶選択中':''}</span>`
+  ).join('');
+
+  // ヘッダー行
+  let html='<div class="ttHeadRow"><div class="ttGutterHead"></div>';
+  days.forEach(d=>{
+    const wd=d.getDay(),ds=dstr(d);
+    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}">${d.getMonth()+1}/${d.getDate()}<br>${'日月火水木金土'[wd]}</div>`;
+  });
+  html+='</div>';
+
+  // 時間未定行(時間数のみの予定がある場合)
+  if(noTime.length){
+    html+='<div class="ttNtRow"><div class="ttGutterHead">時間未定</div>';
+    days.forEach(d=>{
+      const ds=dstr(d);
+      html+='<div class="ttNt">'+noTime.filter(x=>x.ds===ds).map(x=>
+        `<span class="ntChip" style="background:${empColor(x.i)}" title="${esc(x.emp.name)} ${x.hours}h(時間帯未設定)">${esc(x.emp.name.split(/\s+/)[0])} ${x.hours}h</span>`
+      ).join('')+'</div>';
+    });
+    html+='</div>';
+  }
+
+  // 本体(時刻目盛+7日分の列)
+  html+=`<div class="ttBodyRow"><div class="ttGutterCol" style="height:${colH}px">`;
+  for(let h=minH;h<=maxH;h++)html+=`<span style="top:${(h-minH)*HOUR_PX-6}px">${h}:00</span>`;
+  html+='</div>';
+  days.forEach(d=>{
+    const ds=dstr(d),past=ds<today;
+    html+=`<div class="ttCol${past?' colPast':''}" style="height:${colH}px" onclick="dayTap('${ds}')">`;
+    if(ds===today){
+      const nm2=new Date(),mm=nm2.getHours()*60+nm2.getMinutes();
+      const top=(mm-minH*60)/60*HOUR_PX;
+      if(top>=0&&top<=colH)html+=`<i class="nowLine" style="top:${top.toFixed(1)}px"></i>`;
+    }
+    items.filter(it=>it.ds===ds).forEach(it=>{
+      const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440; // 日またぎは24:00で打ち切り表示
+      const top=Math.max(0,(sM-minH*60)/60*HOUR_PX);
+      const btm=Math.min(colH,(eM-minH*60)/60*HOUR_PX);
+      const bh=Math.max(16,btm-top);
+      const mine=it.emp.id===sel;
+      const cls='ttBar'+(it.type==='req'?' ttBarReq':'')+(mine?' ttBarMine':'');
+      const title=`${it.emp.name} ${fmtT(it.s)}〜${fmtT(it.e)}${it.type==='req'?'(承認待ち)':''}`;
+      const click=mine&&!past?` onclick="event.stopPropagation();cellTap('${it.emp.id}','${ds}')"`:'';
+      const short=esc(it.emp.name.split(/\s+/)[0]);
+      html+=`<span class="${cls}" style="left:${(it.i*laneW).toFixed(2)}%;width:${laneW.toFixed(2)}%;top:${top.toFixed(1)}px;height:${bh.toFixed(1)}px;--c:${empColor(it.i)}" title="${title}"${click}><b>${it.type==='req'?'希望 ':''}${short}</b>${bh>=52?`<small>${fmtT(it.s)}-${fmtT(it.e)}</small>`:''}</span>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('tt').innerHTML=html;
+
   document.getElementById('wkHint').textContent=sel
-    ?'自分の行(▶選択中)の今日以降のセルをタップすると、勤務希望を申請できます。'
-    :'名前を選択すると、自分の行から勤務希望を申請できます。';
+    ?'入りたい日の列の空いている部分をタップすると、勤務希望を申請できます。'
+    :'名前を選択すると、勤務希望を申請できます。';
+}
+function dayTap(ds){
+  const sel=document.getElementById('punchEmp').value;
+  const m=document.getElementById('wkMsg');
+  if(!sel){m.textContent='上で名前を選択すると希望を申請できます';m.className='ng';return}
+  if(ds<todayStr()){m.textContent='過去の日付には申請できません';m.className='ng';return}
+  cellTap(sel,ds);
 }
 function cellTap(empId,ds){
   const m=document.getElementById('wkMsg');m.textContent='';m.className='';

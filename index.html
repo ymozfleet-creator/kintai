@@ -60,44 +60,7 @@ td{padding:9px 10px;border-bottom:1px solid var(--line)}
 .wkNav button:hover{border-color:var(--ai);color:var(--ai)}
 .wkNav .lbl{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ai-deep);min-width:110px;text-align:center}
 .tblWrap{overflow-x:auto}
-/* 出勤表(横型シフト表) */
-.ttLegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;align-items:center}
-.lg{padding:2px 8px;border-radius:5px;color:var(--ink);background:#F7F5EE}
-.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.lgSel{font-weight:700;color:var(--ai-deep);background:#F6EFD9;box-shadow:inset 0 0 0 1px var(--gold)}
-.myWeek{background:#F2F6F3;border:1px solid #CFE0D6;border-radius:8px;padding:8px 12px;font-size:12.5px;line-height:1.9;margin-bottom:10px}
-.myWeek b{color:var(--midori)}
-.bizNote{text-align:center;font-size:11.5px;color:var(--sub);margin:-4px 0 10px;letter-spacing:.04em}
-.bizNote b{color:var(--gold)}
-.tblWrap{overflow-x:auto}
-.shHead{display:flex;min-width:672px;margin-bottom:4px}
-.shHead .nm{flex:0 0 96px}
-.shHead .scale{position:relative;height:16px;flex:0 0 572px;font-family:var(--mono);font-size:10px;color:var(--sub)}
-.shHead .scale span{position:absolute;top:1px;transform:translateX(-50%)}
-.dayBlock{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden;background:#fff;min-width:672px}
-.dayTitle{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--ai-deep);color:#F2EFE6;font-size:12.5px}
-.dayTitle b{font-family:var(--mono);font-size:14.5px}
-.dayTitle .cnt{margin-left:auto;font-size:10.5px;background:rgba(255,255,255,.2);border-radius:8px;padding:1px 9px;font-family:var(--mono)}
-.dayBlock.closedD .dayTitle{background:#8B8577}
-.dayBlock.todayD{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
-.dayBlock.todayD .dayTitle{box-shadow:inset 0 -3px 0 var(--gold)}
-.dayBlock.pastD{opacity:.72}
-.shRow{display:flex;align-items:stretch;border-top:1px solid var(--paper)}
-.shRow .nm{flex:0 0 96px;display:flex;align-items:center;gap:5px;padding:4px 6px;font-size:11.5px;font-weight:600;background:#FAF9F4;border-right:1px solid var(--line);white-space:nowrap;overflow:hidden}
-.shRow .nm i{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
-.shTl{position:relative;flex:0 0 572px;height:30px;background-image:repeating-linear-gradient(to right,var(--line) 0 1px,transparent 1px 44px)}
-.offV{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(45deg,rgba(91,102,114,.08) 0 5px,transparent 5px 10px);pointer-events:none}
-.vOpen,.vClose{position:absolute;top:0;bottom:0;border-left:1.5px solid rgba(185,138,47,.55);pointer-events:none}
-.vImb{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(185,138,47,.55);pointer-events:none}
-.nowV{position:absolute;top:0;bottom:0;border-left:2px solid var(--shu);opacity:.6;pointer-events:none;z-index:3}
-.hb{position:absolute;top:4px;height:22px;border-radius:5px;background:var(--c);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:0 4px;box-sizing:border-box;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(28,39,51,.25);overflow:hidden;font-family:var(--mono)}
-.hbReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c);box-shadow:none}
-.hbMine{box-shadow:0 0 0 2px var(--gold);z-index:2;cursor:pointer}
-.hbOut{position:absolute;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;font-family:var(--mono)}
-.closedD .shTl,.closedD .shRow .nm{background:#EDEAE2}
-.reqRowAdd{cursor:pointer}
-.reqRowAdd:hover .shTl{background-color:#FDF6E0}
-.you{font-size:10px;color:var(--gold);font-weight:700}
+/* シフト表・希望申請は shift.html(シフト管理システム)へ分離 */
 #wkMsg{min-height:20px;font-size:13px;font-weight:700;margin-top:8px}
 #wkMsg.ok{color:var(--midori)} #wkMsg.ng{color:var(--shu)}
 dialog{border:none;border-radius:12px;padding:22px;max-width:380px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -137,7 +100,7 @@ footer a:hover{color:var(--ai)}
       <div class="punchBtns">
         <button class="stampBtn stampIn" onclick="punch('in')">出勤<small>CLOCK IN</small></button>
         <button class="stampBtn stampOut" onclick="punch('out')">退勤<small>CLOCK OUT</small></button>
-        <button class="stampBtn stampReq" onclick="gotoShift()">シフト希望<small>REQUEST</small></button>
+        <button class="stampBtn stampReq" onclick="location.href='shift.html'">シフト表<small>SHIFT</small></button>
       </div>
       <div id="punchMsg"></div>
     </div>
@@ -152,38 +115,11 @@ footer a:hover{color:var(--ai)}
     <div id="todayEmpty" class="empty" style="display:none">本日のシフト・打刻はまだありません</div>
   </div>
 
-  <div class="card" id="shiftCard">
-    <h2>出勤表・シフト希望(週間)</h2>
-    <div class="wkNav">
-      <button onclick="moveWeek(-1)">◀ 前週</button>
-      <span class="lbl" id="wkLabel"></span>
-      <button onclick="moveWeek(1)">翌週 ▶</button>
-    </div>
-    <p class="bizNote">営業時間 <b>11:00〜19:30</b>(インビスは19:00まで)|定休日:<b>火曜日</b></p>
-    <div class="ttLegend" id="ttLegend"></div>
-    <div class="myWeek" id="myWeek" style="display:none"></div>
-    <div class="tblWrap"><div id="tt"></div></div>
-    <div id="wkMsg"></div>
-    <p style="font-size:12px;color:var(--sub);line-height:1.8;margin-top:4px" id="wkHint"></p>
-    <p style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.8">各行が1人分で、横バーの位置と「開始-終了(実働h)」の表記でそのまま勤務時間を表します(色は従業員ごと・金枠=自分・点線=承認待ちの希望)。白地の帯=営業時間11:00〜19:30(金線)、点線の縦線=インビス閉店19:00、斜線=営業時間外、グレーの火曜=定休日。日付横の「◯人」は出勤人数、赤い縦線は現在時刻です。希望は管理者の承認後にシフトへ反映されます。</p>
-  </div>
 </main>
 
-<dialog id="reqDlg">
-  <h3>勤務希望の申請</h3>
-  <p style="font-size:13px;color:var(--sub)" id="reqWho"></p>
-  <div class="dlgRow">
-    <label>開始<input type="time" id="reqStart" value="11:00" step="1800"></label>
-    <label>終了<input type="time" id="reqEnd" value="19:30" step="1800"></label>
-  </div>
-  <p style="font-size:12px;color:var(--sub)" id="reqNote">申請後、管理者が承認すると出勤表に反映されます。</p>
-  <div class="dlgBtns">
-    <button class="bGhost" onclick="document.getElementById('reqDlg').close()">キャンセル</button>
-    <button class="bMain" onclick="submitReq()">申請する</button>
-  </div>
-</dialog>
 
-<footer><span id="syncInfo" style="margin-right:10px;color:var(--shu)"></span><a href="admin.html">管理</a></footer>
+
+<footer><span id="syncInfo" style="margin-right:10px;color:var(--shu)"></span><a href="shift.html">シフト表</a> | <a href="admin.html">勤怠管理</a> | <a href="shift-admin.html">シフト管理</a></footer>
 
 <script>
 /* ===== データ層(管理画面と共有:localStorage同一キー) ===== */
@@ -347,22 +283,7 @@ function renderSelect(){
     list.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
 }
 
-/* ===== 週間出勤表・シフト希望 ===== */
-let wkOffset=0,reqTarget=null;
-function gotoShift(){
-  document.getElementById('shiftCard').scrollIntoView({behavior:'smooth'});
-  if(!document.getElementById('punchEmp').value){
-    const m=document.getElementById('wkMsg');m.textContent='上で名前を選択すると希望を申請できます';m.className='ng';
-  }
-}
-function moveWeek(d){wkOffset+=d;renderWeek()}
-function weekDates(){
-  const t=new Date();t.setHours(0,0,0,0);
-  const mon=new Date(t);mon.setDate(t.getDate()-((t.getDay()+6)%7)+wkOffset*7); // 月曜始まり
-  return[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});
-}
-const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-function pendingReq(empId,ds){return(D.shiftReqs||[]).find(q=>q.empId===empId&&q.date===ds&&q.status==='pending')}
+/* ===== シフト参照(本日の出勤表示用。シフト作成・希望は shift.html へ分離) ===== */
 function planFor(empId,ds){
   const ym=ds.slice(0,7),day=Number(ds.slice(8));
   return(D.plans&&D.plans[ym]&&D.plans[ym][empId]&&D.plans[ym][empId][day])||0;
@@ -371,171 +292,7 @@ function planTimeFor(empId,ds){
   const ym=ds.slice(0,7),day=Number(ds.slice(8));
   return(D.planTimes&&D.planTimes[ym]&&D.planTimes[ym][empId]&&D.planTimes[ym][empId][day])||'';
 }
-const fmtT=t=>t.replace(/^0/,''); // 09:00→9:00
-const fmtC=t=>t.replace(/:00$/,'').replace(/^0/,''); // 17:00→17 / 09:30→9:30(バー内の圧縮表記)
-function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩を控除:6h超45分/8h超60分)
-  let sp=(toMin(e)-toMin(s))/60;if(sp<=0)sp+=24;
-  const br=sp>8?1:(sp>6?0.75:0);
-  return Math.max(0,Math.round((sp-br)*2)/2);
-}
-const EMP_COLORS=['#22506E','#BE4B2E','#2E6E4E','#B98A2F','#6B4E9B','#3A7A8C','#A24E6E','#5B6672'];
-const empColor=i=>EMP_COLORS[i%EMP_COLORS.length];
-const HOUR_PX=26;
-const BIZ={minH:9,maxH:22,open:'11:00',close:'19:30',imbiss:'19:00',closedWd:2}; // 営業11:00-19:30/インビス〜19:00/火曜定休
-const isClosedDay=ds=>new Date(ds+'T00:00:00').getDay()===BIZ.closedWd;
-function layoutDay(arr){ // 重ならないシフトは同じレーンに詰め、バー幅を最大化
-  const sorted=[...arr].sort((a,b)=>toMin(a.s)-toMin(b.s)||toMin(a.e)-toMin(b.e));
-  const ends=[];
-  sorted.forEach(it=>{
-    const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440;
-    let li=ends.findIndex(x=>x<=sM);
-    if(li<0){li=ends.length;ends.push(0)}
-    ends[li]=eM;it.lane=li;
-  });
-  const n=Math.max(1,ends.length);
-  sorted.forEach(it=>it.laneN=n);
-  return sorted;
-}
-const HOUR_W=44; // 横軸:1時間=44px
-const chartW=(BIZ.maxH-BIZ.minH)*HOUR_W; // 572px
-const tX=t=>((toMin(t)-BIZ.minH*60)/60*HOUR_W);
-function renderWeek(){
-  const days=weekDates(),sel=document.getElementById('punchEmp').value,today=todayStr();
-  document.getElementById('wkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
-  const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
-  const idx={};list.forEach((e,i)=>idx[e.id]=i);
-
-  // 凡例
-  document.getElementById('ttLegend').innerHTML=list.map((e,i)=>
-    `<span class="lg${e.id===sel?' lgSel':''}"><i style="background:${empColor(i)}"></i>${esc(e.name)}${e.id===sel?' ▶選択中':''}</span>`
-  ).join('');
-
-  // 今週のあなたのシフト
-  const mw=document.getElementById('myWeek');
-  if(sel){
-    const parts=[];let tot=0,rq=0;
-    days.forEach(d=>{
-      const ds=dstr(d),wd='日月火水木金土'[d.getDay()];
-      const band=planTimeFor(sel,ds),p=planFor(sel,ds);
-      if(band){const[s,e]=band.split('-');parts.push(`${d.getDate()}日(${wd}) ${fmtT(s)}-${fmtT(e)}`);tot+=p}
-      else if(p){parts.push(`${d.getDate()}日(${wd}) ${p}h`);tot+=p}
-      if(pendingReq(sel,ds))rq++;
-    });
-    mw.style.display='';
-    mw.innerHTML=`<b>今週のあなたのシフト:</b>${parts.length?parts.join(' / '):'なし'}(実働合計 ${Math.round(tot*10)/10}h)${rq?`<span style="color:#8A6414;font-weight:700"> |承認待ちの希望 ${rq}件</span>`:''}`;
-  }else mw.style.display='none';
-
-  // 時刻スケール(共通ヘッダー)
-  let html=`<div class="shHead"><div class="nm"></div><div class="scale" style="flex-basis:${chartW}px">`;
-  for(let h=BIZ.minH;h<=BIZ.maxH;h++)html+=`<span style="left:${(h-BIZ.minH)*HOUR_W}px">${h}</span>`;
-  html+='</div></div>';
-
-  days.forEach(d=>{
-    const ds=dstr(d),wd=d.getDay(),closed=isClosedDay(ds),past=ds<today,isT=ds===today;
-    // 行データ収集(1行=1人×1バー、開始時刻順)
-    const rows=[],nt=[];
-    list.forEach(emp=>{
-      const band=planTimeFor(emp.id,ds);
-      if(band){const[s,e]=band.split('-');rows.push({emp,i:idx[emp.id],s,e,type:'plan'})}
-      else{const p=planFor(emp.id,ds);if(p)nt.push({emp,i:idx[emp.id],p})}
-      const q=pendingReq(emp.id,ds);
-      if(q)rows.push({emp,i:idx[emp.id],s:q.start,e:q.end,type:'req'});
-    });
-    rows.sort((a,b)=>toMin(a.s)-toMin(b.s));
-    const cnt=new Set(rows.filter(r=>r.type==='plan').map(r=>r.emp.id));nt.forEach(x=>cnt.add(x.emp.id));
-
-    html+=`<div class="dayBlock${closed?' closedD':''}${isT?' todayD':''}${past?' pastD':''}">`;
-    html+=`<div class="dayTitle"><b>${d.getMonth()+1}/${d.getDate()}</b>(${'日月火水木金土'[wd]})${isT?'<span style="color:var(--gold);font-weight:700">本日</span>':''}<span class="cnt">${closed?'定休日':cnt.size+'人'}</span></div>`;
-
-    const overlays=closed?'':(
-      `<i class="offV" style="left:0;width:${tX(BIZ.open).toFixed(0)}px"></i>`+
-      `<i class="offV" style="left:${tX(BIZ.close).toFixed(0)}px;width:${(chartW-tX(BIZ.close)).toFixed(0)}px"></i>`+
-      `<i class="vOpen" style="left:${tX(BIZ.open).toFixed(0)}px"></i>`+
-      `<i class="vClose" style="left:${tX(BIZ.close).toFixed(0)}px"></i>`+
-      `<i class="vImb" style="left:${tX(BIZ.imbiss).toFixed(0)}px"></i>`);
-    let nowV='';
-    if(isT){const n=new Date(),mm=n.getHours()*60+n.getMinutes(),x=(mm-BIZ.minH*60)/60*HOUR_W;
-      if(x>=0&&x<=chartW)nowV=`<i class="nowV" style="left:${x.toFixed(1)}px"></i>`;}
-    const row=(nm,tl,cls='',click='')=>`<div class="shRow ${cls}"${click}><div class="nm">${nm}</div><div class="shTl" style="flex-basis:${chartW}px">${overlays}${nowV}${tl}</div></div>`;
-
-    if(closed){
-      html+=row('',`<span class="hbOut" style="left:8px;color:#A9A08D">定休日(火曜)</span>`);
-    }else{
-      rows.forEach(r=>{
-        const x1=Math.max(0,tX(r.s));let eM=toMin(r.e);if(eM<=toMin(r.s))eM=1440;
-        const x2=Math.min(chartW,(eM-BIZ.minH*60)/60*HOUR_W);
-        if(x2<=0||x1>=chartW)return;
-        const bw=Math.max(10,x2-x1);
-        const h=r.type==='req'?spanWork(r.s,r.e):(planFor(r.emp.id,ds)||spanWork(r.s,r.e));
-        const label=`${fmtC(r.s)}-${fmtC(r.e)}(${h}h)`;
-        const mine=r.emp.id===sel;
-        const cls='hb'+(r.type==='req'?' hbReq':'')+(mine?' hbMine':'');
-        const click=mine&&!past?` onclick="cellTap('${r.emp.id}','${ds}')"`:'';
-        const title=`${r.emp.name} ${fmtT(r.s)}〜${fmtT(r.e)}・実働${h}h${r.type==='req'?'(承認待ちの希望)':'(確定シフト)'}`;
-        let tl=`<span class="${cls}" style="left:${x1.toFixed(1)}px;width:${bw.toFixed(1)}px;--c:${empColor(r.i)}" title="${title}"${click}>${bw>=105?label:''}</span>`;
-        if(bw<105)tl+=`<span class="hbOut" style="left:${(x2+5).toFixed(1)}px">${label}</span>`;
-        const nm=`<i style="background:${empColor(r.i)}"></i>${esc(r.emp.name.split(/\s+/)[0])}${r.type==='req'?'<span style="color:#8A6414;font-size:9px">(希望)</span>':''}`;
-        html+=row(nm,tl);
-      });
-      nt.forEach(x=>{
-        html+=row(`<i style="background:${empColor(x.i)}"></i>${esc(x.emp.name.split(/\s+/)[0])}`,
-          `<span class="hbOut" style="left:8px">${x.p}h(時間帯未設定)</span>`);
-      });
-      if(!rows.length&&!nt.length&&!(sel&&!past))
-        html+=row('',`<span class="hbOut" style="left:8px;color:var(--sub);font-weight:400">シフトなし</span>`);
-      if(sel&&!past)
-        html+=row('<span style="color:var(--gold);font-weight:700;font-size:14px">＋</span>',
-          `<span class="hbOut" style="left:8px;color:var(--gold)">タップして勤務希望を申請</span>`,
-          'reqRowAdd',` onclick="dayTap('${ds}')"`);
-    }
-    html+='</div>';
-  });
-  document.getElementById('tt').innerHTML=html;
-
-  document.getElementById('wkHint').textContent=sel
-    ?'各日の「＋」行をタップすると勤務希望を申請できます。自分のバー(金枠)をタップ→点線は取り消し、確定は変更申請ができます。'
-    :'名前を選択すると、各日に「＋」行が表示され勤務希望を申請できます。';
-}
-function dayTap(ds){
-  const sel=document.getElementById('punchEmp').value;
-  const m=document.getElementById('wkMsg');
-  if(!sel){m.textContent='上で名前を選択すると希望を申請できます';m.className='ng';return}
-  if(ds<todayStr()){m.textContent='過去の日付には申請できません';m.className='ng';return}
-  if(isClosedDay(ds)){m.textContent='火曜日は定休日のため申請できません';m.className='ng';return}
-  cellTap(sel,ds);
-}
-function cellTap(empId,ds){
-  const m=document.getElementById('wkMsg');m.textContent='';m.className='';
-  const q=pendingReq(empId,ds);
-  if(q){ // 申請済み→取り消し
-    if(confirm(`${ds.slice(5).replace('-','/')} の希望(${q.start}〜${q.end})を取り消しますか?`)){
-      q.status='canceled';q.decidedTs=Date.now();saveData(D);renderWeek();
-      m.textContent='希望を取り消しました';m.className='ok';
-    }
-    return;
-  }
-  reqTarget={empId,ds};
-  const e=empById(empId),p=planFor(empId,ds);
-  const wd='日月火水木金土'[new Date(ds+'T00:00:00').getDay()];
-  document.getElementById('reqWho').textContent=`${e.name} さん|${ds.slice(5).replace('-','/')}(${wd})`;
-  document.getElementById('reqNote').textContent=p
-    ?`この日は既に ${p}h の確定シフトがあります。承認されると新しい時間で上書きされます。`
-    :'申請後、管理者が承認すると出勤表に反映されます。';
-  document.getElementById('reqDlg').showModal();
-}
-function submitReq(){
-  const s=document.getElementById('reqStart').value,e2=document.getElementById('reqEnd').value;
-  if(!s||!e2){alert('開始・終了時刻を入力してください');return}
-  const h=spanWork(s,e2);
-  if(h<=0){alert('時間の指定が正しくありません');return}
-  if(!D.shiftReqs)D.shiftReqs=[];
-  D.shiftReqs.push({id:D.seq++,empId:reqTarget.empId,date:reqTarget.ds,start:s,end:e2,hours:h,status:'pending',ts:Date.now()});
-  saveData(D);
-  document.getElementById('reqDlg').close();
-  renderWeek();
-  const m=document.getElementById('wkMsg');
-  m.textContent=`${reqTarget.ds.slice(5).replace('-','/')} ${fmtT(s)}〜${fmtT(e2)}(実働${h}h見込)の希望を申請しました(承認待ち)`;m.className='ok';
-}
+const fmtT=t=>t.replace(/^0/,'');
 
 /* ===== デモデータ(初回のみ・管理画面と同一) ===== */
 function seedDemo(){
@@ -588,11 +345,10 @@ function seedDemo(){
 }
 
 if(!D.employees.length&&!D.records.length&&!D.seeded)seedDemo();
-renderSelect();renderToday();renderWeek();syncBadge();flushSync();
-document.getElementById('punchEmp').addEventListener('change',renderWeek);
+renderSelect();renderToday();syncBadge();flushSync();
 // 他タブ(管理画面)での変更を反映
-window.addEventListener('storage',()=>{D=loadData();renderSelect();renderToday();renderWeek()});
-setInterval(()=>{D=loadData();renderToday();renderWeek()},30000);
+window.addEventListener('storage',()=>{D=loadData();renderSelect();renderToday()});
+setInterval(()=>{D=loadData();renderToday()},30000);
 </script>
 </body>
 </html>

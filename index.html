@@ -60,51 +60,43 @@ td{padding:9px 10px;border-bottom:1px solid var(--line)}
 .wkNav button:hover{border-color:var(--ai);color:var(--ai)}
 .wkNav .lbl{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ai-deep);min-width:110px;text-align:center}
 .tblWrap{overflow-x:auto}
-/* タイムライン(時間割) */
+/* 出勤表(横型シフト表) */
 .ttLegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;align-items:center}
 .lg{padding:2px 8px;border-radius:5px;color:var(--ink);background:#F7F5EE}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .lgSel{font-weight:700;color:var(--ai-deep);background:#F6EFD9;box-shadow:inset 0 0 0 1px var(--gold)}
 .myWeek{background:#F2F6F3;border:1px solid #CFE0D6;border-radius:8px;padding:8px 12px;font-size:12.5px;line-height:1.9;margin-bottom:10px}
 .myWeek b{color:var(--midori)}
-.ttHeadRow,.ttBodyRow,.ttNtRow{display:flex;min-width:720px}
-.ttGutterHead{flex:0 0 44px}
-.ttDayHead{flex:1;min-width:108px;text-align:center;background:var(--ai-deep);color:#F2EFE6;padding:5px 2px;line-height:1.4;border-left:1px solid rgba(255,255,255,.15)}
-.ttDayHead .d{font-size:14px;font-weight:700;font-family:var(--mono)}
-.ttDayHead .w{font-size:10px;opacity:.9}
-.ttDayHead .c{display:inline-block;margin-left:5px;font-size:9.5px;background:rgba(255,255,255,.2);border-radius:8px;padding:0 6px;font-family:var(--mono)}
-.hSun{background:#7A3B2A}
-.hSat{background:#2E5570}
-.hToday{box-shadow:inset 0 -3px 0 var(--gold)}
-.hToday .d{color:var(--gold)}
-.ttNtRow .ttGutterHead{font-size:9px;color:var(--sub);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
-.ttNt{flex:1;min-width:108px;border-left:1px solid var(--line);padding:3px 2px;display:flex;flex-wrap:wrap;gap:3px;background:#FBFAF5;align-content:flex-start}
-.ntChip{color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700}
-.ttGutterCol{flex:0 0 44px;position:relative;font-family:var(--mono);font-size:10px;color:var(--sub)}
-.ttGutterCol span{position:absolute;right:6px}
 .bizNote{text-align:center;font-size:11.5px;color:var(--sub);margin:-4px 0 10px;letter-spacing:.04em}
 .bizNote b{color:var(--gold)}
-.ttCol{flex:1;min-width:108px;position:relative;border-left:1px solid var(--line);cursor:pointer;background-image:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 26px)}
-.offHours{position:absolute;left:0;right:0;background:repeating-linear-gradient(45deg,rgba(91,102,114,.10) 0 5px,transparent 5px 10px);pointer-events:none}
-.bizLine{position:absolute;left:0;right:0;border-top:1.5px solid rgba(185,138,47,.6);pointer-events:none}
-.imbissLine{position:absolute;left:0;right:0;border-top:1px dashed rgba(185,138,47,.6);pointer-events:none}
-.ttCol.colClosed{background-color:#EBE8DF;cursor:default}
-.ttCol.colClosed:hover{background-color:#EBE8DF}
-.closedMark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#ACA391;font-size:14px;font-weight:700;letter-spacing:.35em;writing-mode:vertical-rl;pointer-events:none}
-.ttCol:hover{background-color:#FDF9EE}
-.ttCol.colToday{background-color:#FCF6E4;border-left:2px solid var(--gold)}
-.ttCol.colPast{background-color:#EFEDE6;cursor:default}
-.ttCol.colPast:hover{background-color:#EFEDE6}
-.colPast .ttBar{opacity:.55;box-shadow:none}
-.plusHint{position:absolute;right:4px;top:4px;width:18px;height:18px;border-radius:50%;border:1.5px dashed var(--gold);color:var(--gold);font-size:13px;line-height:15px;text-align:center;opacity:.9;pointer-events:none;font-weight:700}
-.ttBar{position:absolute;box-sizing:border-box;padding:3px 2px;border-radius:5px;background:var(--c);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;border:1px solid rgba(255,255,255,.75);box-shadow:0 1px 3px rgba(28,39,51,.25)}
-.ttBar b{font-size:10.5px;font-weight:700;line-height:1.3;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.ttBar small{font-size:9px;font-family:var(--mono);opacity:.95;line-height:1.35;white-space:nowrap}
-.ttBar .tag{font-size:8px;font-weight:700;background:rgba(255,255,255,.92);color:var(--c);border-radius:3px;padding:0 4px;margin-bottom:1px}
-.ttBarReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c);box-shadow:none}
-.ttBarReq .tag{background:var(--c);color:#fff}
-.ttBarMine{box-shadow:0 0 0 2.5px var(--gold);z-index:2}
-.nowLine{position:absolute;left:0;right:0;height:2px;background:var(--shu);opacity:.65;pointer-events:none;z-index:3}
+.tblWrap{overflow-x:auto}
+.shHead{display:flex;min-width:672px;margin-bottom:4px}
+.shHead .nm{flex:0 0 96px}
+.shHead .scale{position:relative;height:16px;flex:0 0 572px;font-family:var(--mono);font-size:10px;color:var(--sub)}
+.shHead .scale span{position:absolute;top:1px;transform:translateX(-50%)}
+.dayBlock{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden;background:#fff;min-width:672px}
+.dayTitle{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--ai-deep);color:#F2EFE6;font-size:12.5px}
+.dayTitle b{font-family:var(--mono);font-size:14.5px}
+.dayTitle .cnt{margin-left:auto;font-size:10.5px;background:rgba(255,255,255,.2);border-radius:8px;padding:1px 9px;font-family:var(--mono)}
+.dayBlock.closedD .dayTitle{background:#8B8577}
+.dayBlock.todayD{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.dayBlock.todayD .dayTitle{box-shadow:inset 0 -3px 0 var(--gold)}
+.dayBlock.pastD{opacity:.72}
+.shRow{display:flex;align-items:stretch;border-top:1px solid var(--paper)}
+.shRow .nm{flex:0 0 96px;display:flex;align-items:center;gap:5px;padding:4px 6px;font-size:11.5px;font-weight:600;background:#FAF9F4;border-right:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.shRow .nm i{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
+.shTl{position:relative;flex:0 0 572px;height:30px;background-image:repeating-linear-gradient(to right,var(--line) 0 1px,transparent 1px 44px)}
+.offV{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(45deg,rgba(91,102,114,.08) 0 5px,transparent 5px 10px);pointer-events:none}
+.vOpen,.vClose{position:absolute;top:0;bottom:0;border-left:1.5px solid rgba(185,138,47,.55);pointer-events:none}
+.vImb{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(185,138,47,.55);pointer-events:none}
+.nowV{position:absolute;top:0;bottom:0;border-left:2px solid var(--shu);opacity:.6;pointer-events:none;z-index:3}
+.hb{position:absolute;top:4px;height:22px;border-radius:5px;background:var(--c);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:0 4px;box-sizing:border-box;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(28,39,51,.25);overflow:hidden;font-family:var(--mono)}
+.hbReq{background:#FFFDF4;color:var(--c);border:2px dashed var(--c);box-shadow:none}
+.hbMine{box-shadow:0 0 0 2px var(--gold);z-index:2;cursor:pointer}
+.hbOut{position:absolute;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;font-family:var(--mono)}
+.closedD .shTl,.closedD .shRow .nm{background:#EDEAE2}
+.reqRowAdd{cursor:pointer}
+.reqRowAdd:hover .shTl{background-color:#FDF6E0}
 .you{font-size:10px;color:var(--gold);font-weight:700}
 #wkMsg{min-height:20px;font-size:13px;font-weight:700;margin-top:8px}
 #wkMsg.ok{color:var(--midori)} #wkMsg.ng{color:var(--shu)}
@@ -173,7 +165,7 @@ footer a:hover{color:var(--ai)}
     <div class="tblWrap"><div id="tt"></div></div>
     <div id="wkMsg"></div>
     <p style="font-size:12px;color:var(--sub);line-height:1.8;margin-top:4px" id="wkHint"></p>
-    <p style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.8">塗りつぶしバー=確定シフト/点線「希望」バー=承認待ち(色は従業員ごと・金枠=自分)。白地の帯=営業時間(金線11:00〜19:30・点線=インビス19:00)、斜線=営業時間外、グレーの火曜=定休日です。日付横の「◯人」は出勤人数、赤い横線は現在時刻。希望は管理者の承認後にシフトへ反映されます。</p>
+    <p style="font-size:11px;color:var(--sub);margin-top:4px;line-height:1.8">各行が1人分で、横バーの位置と「開始-終了(実働h)」の表記でそのまま勤務時間を表します(色は従業員ごと・金枠=自分・点線=承認待ちの希望)。白地の帯=営業時間11:00〜19:30(金線)、点線の縦線=インビス閉店19:00、斜線=営業時間外、グレーの火曜=定休日。日付横の「◯人」は出勤人数、赤い縦線は現在時刻です。希望は管理者の承認後にシフトへ反映されます。</p>
   </div>
 </main>
 
@@ -404,35 +396,21 @@ function layoutDay(arr){ // 重ならないシフトは同じレーンに詰め�
   sorted.forEach(it=>it.laneN=n);
   return sorted;
 }
+const HOUR_W=44; // 横軸:1時間=44px
+const chartW=(BIZ.maxH-BIZ.minH)*HOUR_W; // 572px
+const tX=t=>((toMin(t)-BIZ.minH*60)/60*HOUR_W);
 function renderWeek(){
   const days=weekDates(),sel=document.getElementById('punchEmp').value,today=todayStr();
   document.getElementById('wkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
   const list=[...D.employees].filter(e=>e.active!==false).sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
   const idx={};list.forEach((e,i)=>idx[e.id]=i);
 
-  // 日別にバー(時間帯あり)と時間未定チップを収集
-  const byDay={},noTime=[];
-  days.forEach(d=>{
-    const ds=dstr(d);byDay[ds]=[];
-    list.forEach(emp=>{
-      const band=planTimeFor(emp.id,ds);
-      if(band){const[s,e]=band.split('-');byDay[ds].push({emp,i:idx[emp.id],s,e,type:'plan'})}
-      else{const p=planFor(emp.id,ds);if(p)noTime.push({ds,i:idx[emp.id],emp,hours:p})}
-      const q=pendingReq(emp.id,ds);
-      if(q)byDay[ds].push({emp,i:idx[emp.id],s:q.start,e:q.end,type:'req'});
-    });
-  });
-
-  // 表示時間レンジ:9〜22時で固定
-  const minH=BIZ.minH,maxH=BIZ.maxH;
-  const colH=(maxH-minH)*HOUR_PX;
-
   // 凡例
   document.getElementById('ttLegend').innerHTML=list.map((e,i)=>
     `<span class="lg${e.id===sel?' lgSel':''}"><i style="background:${empColor(i)}"></i>${esc(e.name)}${e.id===sel?' ▶選択中':''}</span>`
   ).join('');
 
-  // 今週のあなたのシフト(名前選択時)
+  // 今週のあなたのシフト
   const mw=document.getElementById('myWeek');
   if(sel){
     const parts=[];let tot=0,rq=0;
@@ -447,94 +425,76 @@ function renderWeek(){
     mw.innerHTML=`<b>今週のあなたのシフト:</b>${parts.length?parts.join(' / '):'なし'}(実働合計 ${Math.round(tot*10)/10}h)${rq?`<span style="color:#8A6414;font-weight:700"> |承認待ちの希望 ${rq}件</span>`:''}`;
   }else mw.style.display='none';
 
-  // ヘッダー行(日付+曜日+出勤人数)
-  let html='<div class="ttHeadRow"><div class="ttGutterHead"></div>';
-  days.forEach(d=>{
-    const wd=d.getDay(),ds=dstr(d);
-    const cnt=new Set(byDay[ds].filter(x=>x.type==='plan').map(x=>x.emp.id));
-    noTime.filter(x=>x.ds===ds).forEach(x=>cnt.add(x.emp.id));
-    const badge=isClosedDay(ds)?'<span class="c">定休</span>':`<span class="c">${cnt.size}人</span>`;
-    html+=`<div class="ttDayHead ${wd===0?'hSun':wd===6?'hSat':''}${ds===today?' hToday':''}"><div class="d">${d.getMonth()+1}/${d.getDate()}</div><div class="w">${'日月火水木金土'[wd]}${badge}</div></div>`;
-  });
-  html+='</div>';
+  // 時刻スケール(共通ヘッダー)
+  let html=`<div class="shHead"><div class="nm"></div><div class="scale" style="flex-basis:${chartW}px">`;
+  for(let h=BIZ.minH;h<=BIZ.maxH;h++)html+=`<span style="left:${(h-BIZ.minH)*HOUR_W}px">${h}</span>`;
+  html+='</div></div>';
 
-  // 時間未定行
-  if(noTime.length){
-    html+='<div class="ttNtRow"><div class="ttGutterHead">時間未定</div>';
-    days.forEach(d=>{
-      const ds=dstr(d);
-      html+='<div class="ttNt">'+noTime.filter(x=>x.ds===ds).map(x=>
-        `<span class="ntChip" style="background:${empColor(x.i)}" title="${esc(x.emp.name)} ${x.hours}h(時間帯未設定)">${esc(x.emp.name.split(/\s+/)[0])} ${x.hours}h</span>`
-      ).join('')+'</div>';
+  days.forEach(d=>{
+    const ds=dstr(d),wd=d.getDay(),closed=isClosedDay(ds),past=ds<today,isT=ds===today;
+    // 行データ収集(1行=1人×1バー、開始時刻順)
+    const rows=[],nt=[];
+    list.forEach(emp=>{
+      const band=planTimeFor(emp.id,ds);
+      if(band){const[s,e]=band.split('-');rows.push({emp,i:idx[emp.id],s,e,type:'plan'})}
+      else{const p=planFor(emp.id,ds);if(p)nt.push({emp,i:idx[emp.id],p})}
+      const q=pendingReq(emp.id,ds);
+      if(q)rows.push({emp,i:idx[emp.id],s:q.start,e:q.end,type:'req'});
     });
-    html+='</div>';
-  }
+    rows.sort((a,b)=>toMin(a.s)-toMin(b.s));
+    const cnt=new Set(rows.filter(r=>r.type==='plan').map(r=>r.emp.id));nt.forEach(x=>cnt.add(x.emp.id));
 
-  // 本体
-  html+=`<div class="ttBodyRow"><div class="ttGutterCol" style="height:${colH}px">`;
-  for(let h=minH;h<=maxH;h++)html+=`<span style="top:${(h-minH)*HOUR_PX-6}px">${h}:00</span>`;
-  html+='</div>';
-  days.forEach(d=>{
-    const ds=dstr(d),past=ds<today;
-    const closed=isClosedDay(ds);
-    html+=`<div class="ttCol${past?' colPast':''}${closed?' colClosed':''}${ds===today?' colToday':''}"${ds===today?' id="ttTodayCol"':''} style="height:${colH}px" onclick="dayTap('${ds}')">`;
+    html+=`<div class="dayBlock${closed?' closedD':''}${isT?' todayD':''}${past?' pastD':''}">`;
+    html+=`<div class="dayTitle"><b>${d.getMonth()+1}/${d.getDate()}</b>(${'日月火水木金土'[wd]})${isT?'<span style="color:var(--gold);font-weight:700">本日</span>':''}<span class="cnt">${closed?'定休日':cnt.size+'人'}</span></div>`;
+
+    const overlays=closed?'':(
+      `<i class="offV" style="left:0;width:${tX(BIZ.open).toFixed(0)}px"></i>`+
+      `<i class="offV" style="left:${tX(BIZ.close).toFixed(0)}px;width:${(chartW-tX(BIZ.close)).toFixed(0)}px"></i>`+
+      `<i class="vOpen" style="left:${tX(BIZ.open).toFixed(0)}px"></i>`+
+      `<i class="vClose" style="left:${tX(BIZ.close).toFixed(0)}px"></i>`+
+      `<i class="vImb" style="left:${tX(BIZ.imbiss).toFixed(0)}px"></i>`);
+    let nowV='';
+    if(isT){const n=new Date(),mm=n.getHours()*60+n.getMinutes(),x=(mm-BIZ.minH*60)/60*HOUR_W;
+      if(x>=0&&x<=chartW)nowV=`<i class="nowV" style="left:${x.toFixed(1)}px"></i>`;}
+    const row=(nm,tl,cls='',click='')=>`<div class="shRow ${cls}"${click}><div class="nm">${nm}</div><div class="shTl" style="flex-basis:${chartW}px">${overlays}${nowV}${tl}</div></div>`;
+
     if(closed){
-      html+='<span class="closedMark">定 休 日</span>';
+      html+=row('',`<span class="hbOut" style="left:8px;color:#A9A08D">定休日(火曜)</span>`);
     }else{
-      // 営業時間外(開店前・閉店後)を斜線表示、営業境界に金線
-      const openY=(toMin(BIZ.open)-minH*60)/60*HOUR_PX;
-      const closeY=(toMin(BIZ.close)-minH*60)/60*HOUR_PX;
-      const imbY=(toMin(BIZ.imbiss)-minH*60)/60*HOUR_PX;
-      html+=`<i class="offHours" style="top:0;height:${openY.toFixed(1)}px"></i>`;
-      html+=`<i class="offHours" style="top:${closeY.toFixed(1)}px;height:${(colH-closeY).toFixed(1)}px"></i>`;
-      html+=`<i class="bizLine" style="top:${openY.toFixed(1)}px"></i>`;
-      html+=`<i class="bizLine" style="top:${closeY.toFixed(1)}px"></i>`;
-      html+=`<i class="imbissLine" style="top:${imbY.toFixed(1)}px"></i>`;
+      rows.forEach(r=>{
+        const x1=Math.max(0,tX(r.s));let eM=toMin(r.e);if(eM<=toMin(r.s))eM=1440;
+        const x2=Math.min(chartW,(eM-BIZ.minH*60)/60*HOUR_W);
+        if(x2<=0||x1>=chartW)return;
+        const bw=Math.max(10,x2-x1);
+        const h=r.type==='req'?spanWork(r.s,r.e):(planFor(r.emp.id,ds)||spanWork(r.s,r.e));
+        const label=`${fmtC(r.s)}-${fmtC(r.e)}(${h}h)`;
+        const mine=r.emp.id===sel;
+        const cls='hb'+(r.type==='req'?' hbReq':'')+(mine?' hbMine':'');
+        const click=mine&&!past?` onclick="cellTap('${r.emp.id}','${ds}')"`:'';
+        const title=`${r.emp.name} ${fmtT(r.s)}〜${fmtT(r.e)}・実働${h}h${r.type==='req'?'(承認待ちの希望)':'(確定シフト)'}`;
+        let tl=`<span class="${cls}" style="left:${x1.toFixed(1)}px;width:${bw.toFixed(1)}px;--c:${empColor(r.i)}" title="${title}"${click}>${bw>=105?label:''}</span>`;
+        if(bw<105)tl+=`<span class="hbOut" style="left:${(x2+5).toFixed(1)}px">${label}</span>`;
+        const nm=`<i style="background:${empColor(r.i)}"></i>${esc(r.emp.name.split(/\s+/)[0])}${r.type==='req'?'<span style="color:#8A6414;font-size:9px">(希望)</span>':''}`;
+        html+=row(nm,tl);
+      });
+      nt.forEach(x=>{
+        html+=row(`<i style="background:${empColor(x.i)}"></i>${esc(x.emp.name.split(/\s+/)[0])}`,
+          `<span class="hbOut" style="left:8px">${x.p}h(時間帯未設定)</span>`);
+      });
+      if(!rows.length&&!nt.length&&!(sel&&!past))
+        html+=row('',`<span class="hbOut" style="left:8px;color:var(--sub);font-weight:400">シフトなし</span>`);
+      if(sel&&!past)
+        html+=row('<span style="color:var(--gold);font-weight:700;font-size:14px">＋</span>',
+          `<span class="hbOut" style="left:8px;color:var(--gold)">タップして勤務希望を申請</span>`,
+          'reqRowAdd',` onclick="dayTap('${ds}')"`);
     }
-    if(sel&&!past&&!closed)html+='<i class="plusHint">＋</i>';
-    if(ds===today){
-      const nm2=new Date(),mm=nm2.getHours()*60+nm2.getMinutes();
-      const top=(mm-minH*60)/60*HOUR_PX;
-      if(top>=0&&top<=colH)html+=`<i class="nowLine" style="top:${top.toFixed(1)}px"></i>`;
-    }
-    layoutDay(byDay[ds]).forEach(it=>{
-      const sM=toMin(it.s);let eM=toMin(it.e);if(eM<=sM)eM=1440; // 日またぎは24:00で打ち切り表示
-      const top=Math.max(0,(sM-minH*60)/60*HOUR_PX);
-      const btm=Math.min(colH,(eM-minH*60)/60*HOUR_PX);
-      if(btm<=0||top>=colH)return; // 表示レンジ(9〜22時)外はスキップ(詳細はtitleで確認可)
-      const bh=Math.max(18,btm-top);
-      const w=100/it.laneN;
-      const mine=it.emp.id===sel;
-      const cls='ttBar'+(it.type==='req'?' ttBarReq':'')+(mine?' ttBarMine':'');
-      const title=`${it.emp.name} ${fmtT(it.s)}〜${fmtT(it.e)}${it.type==='req'?'(承認待ちの希望)':'(確定シフト)'}`;
-      const click=mine&&!past?` onclick="event.stopPropagation();cellTap('${it.emp.id}','${ds}')"`:'';
-      const short=esc(it.emp.name.split(/\s+/)[0]);
-      let inner=(it.type==='req'?'<span class="tag">希望</span>':'')+`<b>${short}</b>`;
-      if(bh>=46)inner+=`<small>${fmtT(it.s)}</small><small>${fmtT(it.e)}</small>`;
-      else if(bh>=30)inner+=`<small>${fmtC(it.s)}-${fmtC(it.e)}</small>`;
-      html+=`<span class="${cls}" style="left:calc(${(it.lane*w).toFixed(2)}% + 1px);width:calc(${w.toFixed(2)}% - 2px);top:${top.toFixed(1)}px;height:${bh.toFixed(1)}px;--c:${empColor(it.i)}" title="${title}"${click}>${inner}</span>`;
-    });
     html+='</div>';
   });
-  html+='</div>';
   document.getElementById('tt').innerHTML=html;
-  scrollToToday();
 
   document.getElementById('wkHint').textContent=sel
-    ?'入りたい日の列の空いている時間帯をタップ→希望を申請。自分のバー(金枠)をタップ→点線は取り消し、確定は変更申請ができます。'
-    :'名前を選択すると、勤務希望を申請できます。';
-}
-let ttScrollKey=null;
-function scrollToToday(){ // 今週表示のとき、今日の列が見える位置へ(週切替時のみ)
-  if(ttScrollKey===wkOffset)return;
-  ttScrollKey=wkOffset;
-  if(wkOffset!==0)return;
-  try{
-    const col=document.getElementById('ttTodayCol');
-    const wrap=document.getElementById('tt').parentElement;
-    if(col&&wrap&&typeof col.offsetLeft==='number'&&typeof wrap.scrollLeft==='number')
-      wrap.scrollLeft=Math.max(0,col.offsetLeft-60);
-  }catch(e){}
+    ?'各日の「＋」行をタップすると勤務希望を申請できます。自分のバー(金枠)をタップ→点線は取り消し、確定は変更申請ができます。'
+    :'名前を選択すると、各日に「＋」行が表示され勤務希望を申請できます。';
 }
 function dayTap(ds){
   const sel=document.getElementById('punchEmp').value;

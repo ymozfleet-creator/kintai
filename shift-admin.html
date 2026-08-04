@@ -332,6 +332,7 @@ header h1{font-size:15px}
     <div class="formRow" style="margin-bottom:0">
       <button class="btn btnGhost" onclick="copyPrevPlans()">前月のシフトを対象月へコピー</button>
       <button class="btn btnGhost" onclick="clearPlans()">対象月のシフトをクリア</button>
+      <button class="btn btnGhost" onclick="syncShiftAll()">確定シフトをスプレッドシートへ一括送信</button>
     </div>
     <p class="note" style="margin-top:8px">曜日×時間帯のパターンを「表示中の週/今月/来月」へ一括適用します(既存シフトは上書き・実働は自動休憩控除で計算)。毎週の作成は②の「前週をコピー」が最短です。</p>
     </div>
@@ -738,6 +739,64 @@ function spanWork(s,e){ // 拘束時間帯→実働h(自動休憩控除:6h超45�
   const br=sp>8?1:(sp>6?0.75:0);
   return Math.max(0,Math.round((sp-br)*2)/2);
 }
+/* ===== スプレッドシート連携(確定シフト同期・共有キュー) ===== */
+let _shiftDirty=new Set(),_shiftTimer=null,_flushing=false;
+function markShiftDirty(empId,ds){
+  if(!D.settings.gasOn||!D.settings.gasUrl)return;
+  _shiftDirty.add(empId+'_'+ds);
+  clearTimeout(_shiftTimer);
+  _shiftTimer=setTimeout(enqueueShiftSync,300); // 一括操作は1回のPOSTにまとめる
+}
+function shiftPayload(empId,ds){
+  const e=empById(empId);
+  const ym=ds.slice(0,7),day=Number(ds.slice(8));
+  const band=aPlanTime(empId,ds),h=planGet(ym,empId)[day]||0;
+  const wd='日月火水木金土'[new Date(ds+'T00:00:00').getDay()];
+  return{key:empId+'_'+ds,date:ds,wd,
+    empName:e?e.name:'(削除済)',empType:e?(e.type==='part'?'アルバイト':'正社員'):'',
+    start:band?band.split('-')[0]:'',end:band?band.split('-')[1]:'',
+    workH:band?h:(h||''),state:band?'確定':(h?'時間未定':'')};
+}
+function enqueueShiftSync(){
+  if(!_shiftDirty.size)return;
+  const records=[..._shiftDirty].map(k=>{const i=k.indexOf('_');return shiftPayload(k.slice(0,i),k.slice(i+1))});
+  _shiftDirty.clear();
+  if(!D.syncQueue)D.syncQueue=[];
+  D.syncQueue.push({action:'shiftBulk',records,ts:Date.now()});
+  saveData(D);flushSync();
+}
+async function flushSync(){
+  if(_flushing||!D.settings.gasOn||!D.settings.gasUrl||!(D.syncQueue&&D.syncQueue.length))return;
+  _flushing=true;
+  try{
+    while(D.syncQueue.length){
+      const item=D.syncQueue[0];
+      await fetch(D.settings.gasUrl,{method:'POST',mode:'no-cors',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({token:D.settings.gasToken||'',action:item.action,record:item.record,records:item.records})});
+      D.syncQueue.shift();saveData(D);
+    }
+  }catch(e){/* オフライン等:キュー保持し再送 */}
+  _flushing=false;
+}
+setInterval(flushSync,60000);
+window.addEventListener('online',flushSync);
+function syncShiftAll(){ // 手動一括送信(先月・今月・来月の確定シフト)
+  if(!D.settings.gasOn||!D.settings.gasUrl){alert('スプレッドシート連携が未設定です。勤怠管理(admin.html)の「従業員・設定」で設定してください。');return}
+  const now=new Date();let n=0;
+  for(let m=-1;m<=1;m++){
+    const f=new Date(now.getFullYear(),now.getMonth()+m,1);
+    const ym=`${f.getFullYear()}-${pad(f.getMonth()+1)}`;
+    for(let d=1;d<=daysInMonth(ym);d++){
+      const ds=`${ym}-${pad(d)}`;
+      empList(true).forEach(e=>{
+        if(aPlanTime(e.id,ds)||(planGet(ym,e.id)[d]||0)){markShiftDirty(e.id,ds);n++}
+      });
+    }
+  }
+  alert(n?`${n}件の確定シフトを送信キューに追加しました(順次シートへ反映されます)`:'送信対象のシフトがありません');
+}
+
 function setPlanRaw(ym,empId,day,val,band){
   if(!D.plans[ym])D.plans[ym]={};if(!D.plans[ym][empId])D.plans[ym][empId]={};
   if(!D.planTimes)D.planTimes={};
@@ -749,6 +808,7 @@ function setPlanRaw(ym,empId,day,val,band){
     delete D.plans[ym][empId][day];
     delete D.planTimes[ym][empId][day];
   }
+  markShiftDirty(empId,`${ym}-${pad(day)}`); // スプシ連携(有効時のみ)
 }
 function bulkTargetDays(){
   const r=document.getElementById('bulkRange').value;
@@ -923,7 +983,7 @@ document.querySelectorAll('nav button').forEach(b=>{
 function renderAll(){renderPlan();renderReqs();fillBulkEmp();updateCapAlert()}
 document.getElementById('gMonth').onchange=renderAll;
 document.getElementById('gMonth').value=todayStr().slice(0,7);
-renderAll();applyLock();
+renderAll();applyLock();flushSync();
 if(!isAdmin)document.getElementById('pinInput').focus();
 // 打刻画面(別タブ)での打刻を反映
 window.addEventListener('storage',()=>{D=loadData();renderAll()});

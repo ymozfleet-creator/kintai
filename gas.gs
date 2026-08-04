@@ -17,6 +17,7 @@
  * 【シート構成(自動作成)】
  * - 勤怠記録:記録IDごとに常に最新の状態(修正・削除も反映)
  * - 打刻ログ:すべての操作の履歴(追記のみ。監査ログとして残ります)
+ * - 確定シフト:シフト管理画面で確定したシフト(追加・変更・削除・承認を自動反映)
  *
  * 【注意】コードを修正した場合は「デプロイ」→「デプロイを管理」→ 編集 →
  *        バージョン「新バージョン」で再デプロイしないと反映されません。
@@ -36,6 +37,14 @@ function doPost(e) {
       ['受信日時', '操作', '記録ID', '日付', '氏名', '区分', '出勤', '退勤', '休憩(分)', '実働(h)', '残業(h)', '深夜(h)', 'メモ']);
     const master = getSheet(ss, '勤怠記録',
       ['記録ID', '日付', '氏名', '区分', '出勤', '退勤', '休憩(分)', '実働(h)', '残業(h)', '深夜(h)', 'メモ', '最終更新']);
+
+    // 確定シフトの同期(シフト管理画面から)
+    if (data.action === 'shiftBulk') {
+      const shift = getSheet(ss, '確定シフト',
+        ['キー', '日付', '曜日', '氏名', '区分', '開始', '終了', '実働(h)', '状態', '最終更新']);
+      (data.records || []).forEach(r => applyShift(shift, r));
+      return out({ ok: true, count: (data.records || []).length });
+    }
 
     const items = data.action === 'bulk'
       ? (data.records || []).map(r => ({ action: 'upsert', record: r }))
@@ -72,6 +81,23 @@ function apply(log, master, action, r) {
     r.breakMin, r.workH, r.otH, r.nightH, r.note, new Date()];
   if (idx > -1) master.getRange(idx + 2, 1, 1, row.length).setValues([row]);
   else master.appendRow(row);
+}
+
+function applyShift(sh, r) {
+  // キー(従業員ID_日付)でupsert。開始が空=シフト削除
+  const last = sh.getLastRow();
+  let idx = -1;
+  if (last >= 2) {
+    const keys = sh.getRange(2, 1, last - 1, 1).getValues().flat().map(String);
+    idx = keys.indexOf(String(r.key));
+  }
+  if (!r.start) { // 削除
+    if (idx > -1) sh.deleteRow(idx + 2);
+    return;
+  }
+  const row = [r.key, r.date, r.wd, r.empName, r.empType, r.start, r.end, r.workH, r.state || '確定', new Date()];
+  if (idx > -1) sh.getRange(idx + 2, 1, 1, row.length).setValues([row]);
+  else sh.appendRow(row);
 }
 
 function getSheet(ss, name, headers) {

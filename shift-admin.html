@@ -170,6 +170,70 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 
 @media(max-width:600px){main,.kpiRow,nav{padding-left:8px;padding-right:8px}.card{padding:14px 12px}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+/* 週間シフト表(グリッド形式) */
+.wg{border-collapse:collapse;min-width:780px;width:100%}
+.wg th{background:var(--ai-deep);color:#F2EFE6;font-size:11px;padding:6px 4px;text-align:center;line-height:1.45;font-weight:500}
+.wg th.sunH{background:#7A3B2A}
+.wg th.satH{background:#2E5570}
+.wg th.tueH{background:#8B8577}
+.wg th.todayH{box-shadow:inset 0 -3px 0 var(--gold)}
+.wg td{border:1px solid var(--line);padding:4px 3px;text-align:center;vertical-align:middle;height:48px;min-width:92px;font-family:var(--mono)}
+.wg td.nm{font-family:inherit;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;padding:4px 8px;background:#FAF9F4;min-width:84px}
+.wg td.nm.selRow{box-shadow:inset 3px 0 0 var(--gold);background:#FCF6E4}
+/* 名前列の固定・視認性強化 */
+.wg th:first-child{position:sticky;left:0;z-index:3;box-shadow:2px 0 4px rgba(28,39,51,.15)}
+.wg td.nm{position:sticky;left:0;z-index:2;box-shadow:2px 0 4px rgba(28,39,51,.08)}
+.wg td.mineC{background:#FFFBF0}
+.wg td.tueC{background:#EDEAE2}
+.wg td.todayC{background:#FCF6E4}
+.wg td.pastC{background:#F4F2EC}
+.wg td.click{cursor:pointer}
+.wg td.click:hover{background:#FDF6E0}
+.cb{font-size:12.5px;font-weight:700;color:var(--midori);white-space:nowrap;line-height:1.45;letter-spacing:.02em}
+.ch{font-size:9.5px;color:var(--sub);line-height:1.3}
+.cq{font-size:10px;font-weight:700;color:#8A6414;background:#FBF3E4;border:1.5px dashed #B98A2F;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block;white-space:nowrap;cursor:pointer;line-height:1.5}
+.cadd{color:var(--gold);font-weight:700;font-size:15px;opacity:.7}
+.coff{color:#B9B2A2;font-size:11px}
+.wg tfoot td{background:#EEF2F5;font-size:10.5px;font-weight:700;color:var(--ai-deep);height:auto;padding:5px 3px}
+.wg td.wt{background:#F6EFD9;font-weight:700;font-size:12px;color:var(--ai-deep);min-width:58px}
+details.card summary{cursor:pointer;font-size:14px;font-weight:700;letter-spacing:.08em;color:var(--ai-deep);list-style:none;padding-bottom:8px;border-bottom:2px solid var(--paper)}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::before{content:'▸ ';color:var(--gold)}
+details.card[open] summary::before{content:'▾ ';color:var(--gold)}
+
+/* ===== 日別リスト形式(v5) ===== */
+.dayL{border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:10px;overflow:hidden}
+.dayL.todayL{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.dayL.pastL{opacity:.62}
+.dayLH{display:flex;align-items:baseline;gap:8px;padding:9px 14px;background:#F2F5F7;border-bottom:1px solid var(--line);border-left:4px solid var(--ai)}
+.todayL .dayLH{background:#FCF4DD;border-left-color:var(--gold)}
+.closedL .dayLH{background:#EBE8E0;border-left-color:#8B8577}
+.dayLH b{font-family:var(--mono);font-size:17px;color:var(--ai-deep)}
+.dayLH .wd{font-size:13px;color:var(--sub);font-weight:700}
+.dayLH .wd.su{color:var(--shu)} .dayLH .wd.sa{color:var(--ai)}
+.dayLH .tdy{font-size:11px;font-weight:700;color:#fff;background:var(--gold);border-radius:4px;padding:1px 7px}
+.dayLH .sum{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--sub);font-weight:600}
+.pRow{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--paper);min-height:46px}
+.pRow:last-child{border-bottom:none}
+.pRow.tap{cursor:pointer}
+.pRow.tap:active,.pRow.tap:hover{background:#FDF6E0}
+.pRow.mine{background:#FFF9EA;box-shadow:inset 3px 0 0 var(--gold)}
+.dot{width:11px;height:11px;border-radius:3px;flex:0 0 11px}
+.pn{font-size:15px;font-weight:700;min-width:64px}
+.meTag{font-size:10px;font-weight:700;color:#fff;background:var(--gold);border-radius:4px;padding:1px 6px}
+.pt{font-family:var(--mono);font-size:17.5px;font-weight:700;letter-spacing:.02em;color:var(--ink);white-space:nowrap}
+.pt .en{color:var(--sub);font-weight:400;padding:0 2px}
+.ph{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--sub);font-weight:600;white-space:nowrap}
+.qRow{background:#FFF8E4}
+.qRow .pt{color:#8A6414}
+.qTag{font-size:10.5px;font-weight:700;color:#8A6414;border:1.5px dashed #B98A2F;border-radius:4px;padding:1px 6px;white-space:nowrap}
+.pAdd{display:flex;align-items:center;gap:8px;padding:11px 14px;color:var(--gold);font-weight:700;font-size:13.5px;cursor:pointer}
+.pAdd:hover,.pAdd:active{background:#FDF6E0}
+.pEmpty{padding:11px 14px;font-size:13px;color:#A9A08D}
+.wkNav button{white-space:nowrap;padding:6px 10px}
+header h1{font-size:15px}
+.aTot{background:#F2F5F7;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-family:var(--mono);font-size:12.5px;color:var(--ai-deep);line-height:1.9;margin-top:2px}
 </style>
 </head>
 <body>
@@ -189,61 +253,62 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
 <header>
   <h1>ケーニッヒ武蔵小金井 本店<small>シフト管理 ADMIN</small></h1>
   <div class="headCtrl">
-    <label style="font-size:11px;opacity:.8">対象月</label>
-    <input type="month" id="gMonth">
     <a class="headBtn" href="index.html">打刻画面</a>
     <button class="headBtn" onclick="doLock()">ロック</button>
   </div>
 </header>
 
 <!-- KPI -->
-<nav>
-  <button class="on" data-tab="req">シフト表<span class="navBadge" id="reqCnt" style="display:none"></span></button>
-  <button data-tab="plan">稼働調整</button>
-</nav>
+
 
 <main>
 
-<!-- ===== 稼働調整 ===== -->
-<section id="tab-plan" class="tab">
-  <div class="card">
-    <div class="tblWrap"><table>
-      <thead><tr>
-        <th>従業員</th><th>区分</th><th class="r">月間上限(h)</th><th class="r">予定合計</th>
-        <th class="r">実績</th><th class="r">残り枠</th><th class="r">着地予測</th><th>消化率</th><th>状態</th>
-      </tr></thead>
-      <tbody id="capBody"></tbody>
-    </table></div>
-    <p class="note" style="margin-top:10px">上限はセルで直接編集(即保存)。着地予測=実績+今日以降の予定。アルバイトは扶養枠、正社員は残業上限(36協定:月45h目安)の管理に。</p>
-  </div>
-  <div class="card">
-    <h2>月間シフト一覧(セルをクリックで設定・変更・削除)</h2>
-    <div class="formRow" style="margin-bottom:8px">
-      <button class="btn btnGhost" onclick="copyPrevPlans()">前月のシフトをコピー</button>
-      <button class="btn btnGhost" onclick="clearPlans()">対象月のシフトをクリア</button>
-    </div>
-    <div class="tblWrap"><table class="matrix mg"><thead id="mxHead"></thead><tbody id="mxBody"></tbody></table></div>
-    <p class="note" style="margin-top:8px">対象月の全シフトを時間帯で一覧します。セルをクリックすると「シフト表」タブと同じダイアログで追加・変更・削除できます。緑=実績確定日/グレー=定休(火)/枠=本日。着地予測(上の表)に即反映されます。</p>
-  </div>
-</section>
+
 
 <!-- ===== シフト承認 ===== -->
 <section id="tab-req" class="tab on">
+  <div class="card" style="background:#F2F6F3;border-color:#CFE0D6">
+    <p style="font-size:12.5px;line-height:2;color:var(--ink)"><b style="color:var(--midori)">シフト管理の流れ:</b>① 希望が届いたら承認(なければ自動で1行にたたまれます)→ ② シフト表のセルをクリックして追加・調整、毎週の作成は「前週をコピー」→ ④ 扶養枠・残業上限は要注意バッジが付いたら確認</p>
+  </div>
   <div class="card">
-    <h2 style="margin-bottom:8px">週間シフト表(作成・承認)</h2>
+    <h2 style="margin-bottom:10px">① シフト承認待ち<span class="navBadge" id="reqCnt" style="display:none"></span></h2>
+    <div id="apprNone" style="display:none;font-size:12.5px;color:var(--sub)">現在、承認待ちはありません。<a href="#" id="histLink" onclick="toggleReqHistory();return false" style="color:var(--ai)">履歴を表示</a></div>
+    <div id="apprBody">
+    <div class="formRow">
+      <label>表示<select id="reqView" onchange="renderReqs()">
+        <option value="pending">承認待ちのみ</option><option value="all">すべて(履歴)</option>
+      </select></label>
+      <button class="btn btnMain" onclick="approveAll()">承認待ちを一括承認</button>
+    </div>
+    <div class="tblWrap"><table>
+      <thead><tr>
+        <th>申請日時</th><th>従業員</th><th>希望日</th><th>時間帯</th><th class="r">実働見込</th><th>備考</th><th>状態</th><th></th>
+      </tr></thead>
+      <tbody id="reqBody"></tbody>
+    </table></div>
+    <div id="reqEmpty" class="empty" style="display:none">承認待ちの申請はありません</div>
+    <p class="note" style="margin-top:10px">shift.html(スタッフ用シフト表)から申請された勤務希望です。承認すると下の週間シフト表と④の着地予測に即時反映されます。既にシフトがある日は承認時に上書きされます。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-bottom:8px">② 週間シフト表(行をタップで変更・「＋」で追加)</h2>
     <div class="wkNav">
       <button onclick="moveAWeek(-1)">◀ 前週</button>
       <button onclick="aWk=0;renderAdminWeek()" style="font-weight:700;color:var(--ai-deep)">今週</button>
       <span class="lbl" id="aWkLabel"></span>
       <button onclick="moveAWeek(1)">翌週 ▶</button>
+      <button onclick="copyPrevWeek()" style="border-color:var(--gold);color:var(--gold);font-weight:700">前週をコピー</button>
+      <button onclick="clearWeek()">この週をクリア</button>
     </div>
     <p style="text-align:center;font-size:11.5px;color:var(--sub);margin:-4px 0 10px">営業時間 <b style="color:var(--gold)">11:00〜19:30</b>(インビスは19:00まで)|定休日:<b style="color:var(--gold)">火曜日</b></p>
     <div class="ttLegend" id="aLegend"></div>
     <div class="tblWrap"><div id="aTT"></div></div>
-    <p class="note" style="margin-top:8px">全スタッフの行を毎日表示しています。<b>空いている行をクリック→シフトを追加</b>、<b>確定バーをクリック→時間の変更・削除</b>、<b>点線「希望」バーをクリック→その場で承認</b>(却下は下の一覧から)。バーの位置と「開始-終了(実働h)」表記でそのまま勤務時間が読めます。日付横の「◯人」は出勤人数、白地=営業時間11:00〜19:30、点線縦線=インビス19:00、グレー=定休日(火)。</p>
+    <p class="note" style="margin-top:8px">行をタップ→変更・削除/「＋ シフトを追加」→新規追加/黄色の「希望」行をタップ→その場で承認(却下は①から)。各日の見出しに人数・合計h、最下部に今週の実働合計を表示します。</p>
   </div>
-  <div class="card">
-    <h2>パターン一括入力(曜日パターンでまとめて作成)</h2>
+  <details class="card">
+    <summary>③ パターン一括入力(初回セットアップ・大きな変更のとき)</summary>
+    <div style="margin-top:12px">
     <div class="formRow" style="margin-bottom:6px">
       <label>対象<select id="bulkEmp" style="min-width:150px"></select></label>
       <label>曜日<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 0">
@@ -265,27 +330,28 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
       <button class="btn btnMain" onclick="applyBulk()">適用</button>
     </div>
     <div class="formRow" style="margin-bottom:0">
-      <button class="btn btnGhost" onclick="copyPrevWeek()">前週のシフトを表示中の週へコピー</button>
-      <button class="btn btnGhost" onclick="clearWeek()">表示中の週をクリア</button>
+      <button class="btn btnGhost" onclick="copyPrevPlans()">前月のシフトを対象月へコピー</button>
+      <button class="btn btnGhost" onclick="clearPlans()">対象月のシフトをクリア</button>
     </div>
-    <p class="note" style="margin-top:8px">毎週の作成は<b>「前週コピー」→上の週間シフト表で個別調整</b>が最短です。パターン適用は選んだ曜日の既存シフトを上書きします(実働は自動休憩控除で計算)。</p>
-  </div>
-  <div class="card">
-    <div class="formRow">
-      <label>表示<select id="reqView" onchange="renderReqs()">
-        <option value="pending">承認待ちのみ</option><option value="all">すべて(履歴)</option>
-      </select></label>
-      <button class="btn btnMain" onclick="approveAll()">承認待ちを一括承認</button>
+    <p class="note" style="margin-top:8px">曜日×時間帯のパターンを「表示中の週/今月/来月」へ一括適用します(既存シフトは上書き・実働は自動休憩控除で計算)。毎週の作成は②の「前週をコピー」が最短です。</p>
     </div>
+  </details>
+</section>
+
+<!-- ===== 稼働調整 ===== -->
+<section id="tab-plan" class="tab on">
+  <details class="card" id="capDetails">
+    <summary>④ 月間の稼働状況(扶養枠・残業上限)<span class="navBadge" id="capAlert" style="display:none;margin-left:8px"></span></summary>
+    <div class="formRow" style="margin:12px 0 8px"><label>対象月<input type="month" id="gMonth"></label></div>
     <div class="tblWrap"><table>
       <thead><tr>
-        <th>申請日時</th><th>従業員</th><th>希望日</th><th>時間帯</th><th class="r">実働見込</th><th>備考</th><th>状態</th><th></th>
+        <th>従業員</th><th>区分</th><th class="r">月間上限(h)</th><th class="r">予定合計</th>
+        <th class="r">実績</th><th class="r">残り枠</th><th class="r">着地予測</th><th>消化率</th><th>状態</th>
       </tr></thead>
-      <tbody id="reqBody"></tbody>
+      <tbody id="capBody"></tbody>
     </table></div>
-    <div id="reqEmpty" class="empty" style="display:none">承認待ちの申請はありません</div>
-    <p class="note" style="margin-top:10px">shift.html(スタッフ用シフト表)から申請された勤務希望です。承認すると上の週間シフト表・月間一覧に反映され、稼働調整の着地予測にも即時連動します。既にシフトがある日は承認時に上書きされます。</p>
-  </div>
+    <p class="note" style="margin-top:10px">上限はセルで直接編集(即保存)。着地予測=実績+今日以降の予定。アルバイトは扶養枠、正社員は残業上限(36協定:月45h目安)の管理に。</p>
+  </details>
 </section>
 
 </main>
@@ -297,6 +363,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
   <h3 id="shDlgTitle">シフトの設定</h3>
   <p style="font-size:13px;color:var(--sub);margin-bottom:4px" id="shDlgWho"></p>
   <div class="formRow" style="margin:12px 0">
+    <label>従業員<select id="shEmp" style="min-width:140px"></select></label>
     <label>開始<input type="time" id="shS" value="11:00" step="1800"></label>
     <label>終了<input type="time" id="shE" value="19:30" step="1800"></label>
   </div>
@@ -412,7 +479,6 @@ function renderPlan(){
       <td>${cap?st:'−'}</td>
     </tr>`;
   }).join('');
-  renderMonthGrid();
 }
 function renderMonthGrid(){
   const ym=gm();
@@ -486,89 +552,69 @@ function approveFromChart(id){
   if(!confirm(`${e?e.name:'?'} ${q.date.slice(5).replace('-','/')} ${fmtT(q.start)}〜${fmtT(q.end)} の希望を承認しますか?`))return;
   approveReq(id);
 }
-const HOUR_W=44;
-const chartW=(BIZ.maxH-BIZ.minH)*HOUR_W;
-const tX=t=>((toMin(t)-BIZ.minH*60)/60*HOUR_W);
+const tEn='<span class="en">–</span>';
 function renderAdminWeek(){
   const el=document.getElementById('aTT');if(!el)return;
   const days=aWeekDates(),today=todayStr();
   document.getElementById('aWkLabel').textContent=`${days[0].getMonth()+1}/${days[0].getDate()} 〜 ${days[6].getMonth()+1}/${days[6].getDate()}`;
   const list=empList();
   const idx={};list.forEach((e,i)=>idx[e.id]=i);
-  document.getElementById('aLegend').innerHTML=list.map((e,i)=>
-    `<span class="lg"><i style="background:${empColor(i)}"></i>${esc(e.name)}</span>`).join('');
+  document.getElementById('aLegend').innerHTML='';
 
-  let html=`<div class="shHead"><div class="nm"></div><div class="scale" style="flex-basis:${chartW}px">`;
-  for(let h=BIZ.minH;h<=BIZ.maxH;h++)html+=`<span style="left:${(h-BIZ.minH)*HOUR_W}px">${h}</span>`;
-  html+='</div></div>';
-
+  let html='';
+  const wkTot={};let wkAll=0;
   days.forEach(d=>{
     const ds=dstrA(d),wd=d.getDay(),closed=isClosedDay(ds),past=ds<today,isT=ds===today;
     const ym=ds.slice(0,7),day=Number(ds.slice(8));
-    let cnt=0;
-    list.forEach(emp=>{if(aPlanTime(emp.id,ds)||(planGet(ym,emp.id)[day]||0))cnt++});
-
-    html+=`<div class="dayBlock${closed?' closedD':''}${isT?' todayD':''}${past?' pastD':''}">`;
-    html+=`<div class="dayTitle"><b>${d.getMonth()+1}/${d.getDate()}</b>(${'日月火水木金土'[wd]})${isT?'<span style="color:var(--gold);font-weight:700">本日</span>':''}<span class="cnt">${closed?'定休日':cnt+'人'}</span></div>`;
-
-    const overlays=closed?'':(
-      `<i class="offV" style="left:0;width:${tX(BIZ.open).toFixed(0)}px"></i>`+
-      `<i class="offV" style="left:${tX(BIZ.close).toFixed(0)}px;width:${(chartW-tX(BIZ.close)).toFixed(0)}px"></i>`+
-      `<i class="vOpen" style="left:${tX(BIZ.open).toFixed(0)}px"></i>`+
-      `<i class="vClose" style="left:${tX(BIZ.close).toFixed(0)}px"></i>`+
-      `<i class="vImb" style="left:${tX(BIZ.imbiss).toFixed(0)}px"></i>`);
-    let nowV='';
-    if(isT){const n=new Date(),mm=n.getHours()*60+n.getMinutes(),x=(mm-BIZ.minH*60)/60*HOUR_W;
-      if(x>=0&&x<=chartW)nowV=`<i class="nowV" style="left:${x.toFixed(1)}px"></i>`;}
-
-    // 全スタッフの行を常時表示(空欄クリック=シフト追加)
+    const rows=[];let cnt=0,tot=0;
     list.forEach(emp=>{
-      const i=idx[emp.id];
-      let tl='';
-      const band=aPlanTime(emp.id,ds);
-      const hOnly=!band?(planGet(ym,emp.id)[day]||0):0;
-      if(band){
-        const[s,e]=band.split('-');
-        const x1=Math.max(0,tX(s));let eM=toMin(e);if(eM<=toMin(s))eM=1440;
-        const x2=Math.min(chartW,(eM-BIZ.minH*60)/60*HOUR_W);
-        const bw=Math.max(10,x2-x1);
-        const h=planGet(ym,emp.id)[day]||spanWork(s,e);
-        const label=`${fmtC(s)}-${fmtC(e)}(${h}h)`;
-        tl+=`<span class="hb" style="left:${x1.toFixed(1)}px;width:${bw.toFixed(1)}px;--c:${empColor(i)}" title="${esc(emp.name)} ${fmtT(s)}〜${fmtT(e)}・実働${h}h(クリックで変更・削除)" onclick="event.stopPropagation();adminShiftDialog('${emp.id}','${ds}')">${bw>=105?label:''}</span>`;
-        if(bw<105)tl+=`<span class="hbOut" style="left:${(x2+5).toFixed(1)}px">${label}</span>`;
-      }else if(hOnly){
-        tl+=`<span class="hbOut" style="left:8px">${hOnly}h(時間帯未設定・クリックで設定)</span>`;
-      }
+      const band=aPlanTime(emp.id,ds),h=planGet(ym,emp.id)[day]||0;
+      if(band){const[s,e]=band.split('-');rows.push({emp,i:idx[emp.id],s,e,h,type:'plan'});cnt++;tot+=h;wkTot[emp.id]=(wkTot[emp.id]||0)+h}
+      else if(h){rows.push({emp,i:idx[emp.id],s:'',e:'',h,type:'hOnly'});cnt++;tot+=h;wkTot[emp.id]=(wkTot[emp.id]||0)+h}
       const q=aPending(emp.id,ds);
-      if(q){
-        const x1=Math.max(0,tX(q.start));let eM=toMin(q.end);if(eM<=toMin(q.start))eM=1440;
-        const x2=Math.min(chartW,(eM-BIZ.minH*60)/60*HOUR_W);
-        const bw=Math.max(10,x2-x1);
-        const h=spanWork(q.start,q.end);
-        const label=`希望 ${fmtC(q.start)}-${fmtC(q.end)}(${h}h)`;
-        tl+=`<span class="hb hbReq" style="left:${x1.toFixed(1)}px;width:${bw.toFixed(1)}px;--c:${empColor(i)};top:${band?'6':'6'}px" title="${esc(emp.name)}の希望 ${fmtT(q.start)}〜${fmtT(q.end)}・実働${h}h(クリックで承認)" onclick="event.stopPropagation();approveFromChart(${q.id})">${bw>=125?label:''}</span>`;
-        if(bw<125)tl+=`<span class="hbOut" style="left:${(x2+5).toFixed(1)}px;color:#8A6414">${label}</span>`;
-      }
-      const nm=`<i style="background:${empColor(i)}"></i>${esc(emp.name.split(/\s+/)[0])}`;
-      html+=`<div class="shRow"><div class="nm">${nm}</div><div class="shTl" style="flex-basis:${chartW}px" onclick="adminShiftDialog('${emp.id}','${ds}')" title="クリックで${esc(emp.name.split(/\s+/)[0])}さんのシフトを設定">${overlays}${nowV}${tl}</div></div>`;
+      if(q)rows.push({emp,i:idx[emp.id],s:q.start,e:q.end,h:spanWork(q.start,q.end),type:'req',qid:q.id});
     });
+    rows.sort((a,b)=>(toMin(a.s)||0)-(toMin(b.s)||0));
+    wkAll+=tot;
+
+    html+=`<div class="dayL${isT?' todayL':''}${closed?' closedL':''}${past?' pastL':''}">`;
+    html+=`<div class="dayLH"><b>${d.getMonth()+1}/${d.getDate()}</b><span class="wd ${wd===0?'su':wd===6?'sa':''}">${'日月火水木金土'[wd]}</span>${isT?'<span class="tdy">本日</span>':''}<span class="sum">${closed?'定休日':cnt?cnt+'人・'+Math.round(tot*10)/10+'h':''}</span></div>`;
+    if(closed)html+='<div class="pEmpty">定休日(火曜)</div>';
+    rows.forEach(r=>{
+      if(r.type==='req'){
+        html+=`<div class="pRow qRow tap" onclick="approveFromChart(${r.qid})" title="タップで承認(却下は①の一覧から)">`+
+          `<i class="dot" style="background:${empColor(r.i)}"></i><span class="pn">${esc(r.emp.name.split(/\s+/)[0])}</span>`+
+          `<span class="qTag">希望</span><span class="pt">${fmtT(r.s)}${tEn}${fmtT(r.e)}</span><span class="ph">${r.h}h・タップで承認</span></div>`;
+      }else{
+        const time=r.type==='plan'?`<span class="pt">${fmtT(r.s)}${tEn}${fmtT(r.e)}</span>`:`<span class="pt" style="font-size:13px;color:var(--sub)">時間未定</span>`;
+        html+=`<div class="pRow tap" onclick="adminShiftDialog('${r.emp.id}','${ds}')" title="タップで変更・削除">`+
+          `<i class="dot" style="background:${empColor(r.i)}"></i><span class="pn">${esc(r.emp.name.split(/\s+/)[0])}</span>`+
+          `${time}<span class="ph">${r.h}h</span></div>`;
+      }
+    });
+    if(!closed)html+=`<div class="pAdd" onclick="adminShiftDialog('','${ds}')">＋ シフトを追加</div>`;
     html+='</div>';
   });
+  html+=`<div class="aTot"><b>今週の実働合計:</b> ${list.map(e=>`${esc(e.name.split(/\s+/)[0])} ${Math.round((wkTot[e.id]||0)*10)/10}h`).join('|')}|<b>計 ${Math.round(wkAll*10)/10}h</b></div>`;
   el.innerHTML=html;
 }
 
 /* シフト編集(空欄クリック→追加/バークリック→変更・削除) */
 let shTarget=null;
 function adminShiftDialog(empId,ds){
-  shTarget={empId,ds};
-  const e=empById(empId);if(!e)return;
+  shTarget={ds};
   const g=x=>document.getElementById(x);
-  const band=aPlanTime(empId,ds);
-  const ym=ds.slice(0,7),day=Number(ds.slice(8));
-  const hOnly=!band?(planGet(ym,empId)[day]||0):0;
+  const sel=g('shEmp');
+  sel.innerHTML=empList().map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  const isEdit=!!empId;
+  if(isEdit)sel.value=empId;
+  sel.disabled=isEdit; // 既存編集時は本人固定
   const wd='日月火水木金土'[new Date(ds+'T00:00:00').getDay()];
-  g('shDlgTitle').textContent=(band||hOnly)?'シフトの変更':'シフトの追加';
-  g('shDlgWho').textContent=`${e.name}|${ds.slice(5).replace('-','/')}(${wd})${isClosedDay(ds)?'※定休日':''}${hOnly?`|現在 ${hOnly}h(時間帯未設定)`:''}`;
+  const band=isEdit?aPlanTime(empId,ds):'';
+  const ym=ds.slice(0,7),day=Number(ds.slice(8));
+  const hOnly=isEdit&&!band?(planGet(ym,empId)[day]||0):0;
+  g('shDlgTitle').textContent=isEdit?'シフトの変更・削除':'シフトの追加';
+  g('shDlgWho').textContent=`${ds.slice(5).replace('-','/')}(${wd})${isClosedDay(ds)?'※定休日':''}${hOnly?`|現在 ${hOnly}h(時間未定)`:''}`;
   g('shS').value=band?band.split('-')[0]:'11:00';
   g('shE').value=band?band.split('-')[1]:'19:30';
   g('shDel').style.display=(band||hOnly)?'':'none';
@@ -576,18 +622,21 @@ function adminShiftDialog(empId,ds){
 }
 function saveShiftDialog(){
   const g=x=>document.getElementById(x);
+  const empId=g('shEmp').value;
+  if(!empId){alert('従業員を選択してください');return}
   const s=g('shS').value,e2=g('shE').value;
   if(!s||!e2){alert('開始・終了時刻を入力してください');return}
   const h=spanWork(s,e2);
   if(h<=0){alert('時間帯の指定が正しくありません');return}
   const ym=shTarget.ds.slice(0,7),day=Number(shTarget.ds.slice(8));
-  setPlanRaw(ym,shTarget.empId,day,h,`${s}-${e2}`);
+  setPlanRaw(ym,empId,day,h,`${s}-${e2}`);
   saveData(D);g('shDlg').close();renderAll();
 }
 function delShiftDialog(){
   if(!confirm('この日のシフトを削除しますか?'))return;
+  const empId=document.getElementById('shEmp').value;
   const ym=shTarget.ds.slice(0,7),day=Number(shTarget.ds.slice(8));
-  setPlanRaw(ym,shTarget.empId,day,0,'');
+  setPlanRaw(ym,empId,day,0,'');
   saveData(D);document.getElementById('shDlg').close();renderAll();
 }
 
@@ -630,7 +679,27 @@ function renderReqs(){
   const b=document.getElementById('reqCnt');
   b.style.display=pendingCnt?'':'none';
   b.textContent=pendingCnt;
+  // 承認待ち0件かつ承認待ち表示のときは1行に縮小
+  const slim=(v==='pending'&&pendingCnt===0);
+  const none=document.getElementById('apprNone'),body=document.getElementById('apprBody');
+  if(none)none.style.display=slim?'':'none';
+  if(body)body.style.display=slim?'none':'';
   renderAdminWeek();
+}
+function toggleReqHistory(){
+  const v=document.getElementById('reqView');
+  v.value='all';
+  renderReqs();
+}
+function updateCapAlert(){
+  const el=document.getElementById('capAlert');if(!el)return;
+  const html=document.getElementById('capBody').innerHTML;
+  const over=(html.match(/stOver/g)||[]).length,warn=(html.match(/stWarn/g)||[]).length;
+  const t=over+warn;
+  el.style.display=t?'':'none';
+  el.textContent=over?('超過'+over+(warn?'・注意'+warn:'')):('注意'+warn);
+  const d=document.getElementById('capDetails');
+  if(d&&t)d.open=true;
 }
 function applyReqToPlan(q){
   const ym=q.date.slice(0,7),day=Number(q.date.slice(8));
@@ -851,7 +920,7 @@ document.querySelectorAll('nav button').forEach(b=>{
     document.getElementById('tab-'+b.dataset.tab).classList.add('on');
   };
 });
-function renderAll(){renderPlan();renderReqs();fillBulkEmp()}
+function renderAll(){renderPlan();renderReqs();fillBulkEmp();updateCapAlert()}
 document.getElementById('gMonth').onchange=renderAll;
 document.getElementById('gMonth').value=todayStr().slice(0,7);
 renderAll();applyLock();

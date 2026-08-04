@@ -233,6 +233,7 @@ dialog h3{font-size:15px;margin-bottom:14px;color:var(--ai-deep)}
     <h2 style="margin-bottom:8px">週間シフト表(作成・承認)</h2>
     <div class="wkNav">
       <button onclick="moveAWeek(-1)">◀ 前週</button>
+      <button onclick="aWk=0;renderAdminWeek()" style="font-weight:700;color:var(--ai-deep)">今週</button>
       <span class="lbl" id="aWkLabel"></span>
       <button onclick="moveAWeek(1)">翌週 ▶</button>
     </div>

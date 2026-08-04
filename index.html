@@ -247,6 +247,12 @@ function punch(kind){
   saveData(D);
   if(syncRec)queueSync('upsert',payloadRecord(syncRec));
   renderToday();
+  // 店頭キオスク動作:次の人がすぐ打刻できるよう5秒後に選択とメッセージを自動リセット
+  clearTimeout(window._punchReset);
+  window._punchReset=setTimeout(()=>{
+    document.getElementById('punchEmp').value='';
+    msg.textContent='';msg.className='';
+  },5000);
 }
 
 /* ===== 表示 ===== */
